@@ -1,13 +1,17 @@
 package github.cheneykwok.service;
 
 import github.cheneykwok.RpcService;
+import github.cheneykwok.api.User;
 import github.cheneykwok.api.UserService;
 
 @RpcService
 public class UserRpcService implements UserService {
 
     @Override
-    public String getUserName() {
-        return "张三";
+    public User getUser(Integer userId, String username) {
+        User user = new User();
+        user.setUserId(userId);
+        user.setUsername(username);
+        return user;
     }
 }

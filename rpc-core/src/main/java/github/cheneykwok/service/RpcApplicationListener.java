@@ -8,7 +8,6 @@ import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.server.TThreadedSelectorServer;
 import org.apache.thrift.transport.TNonblockingServerSocket;
 import org.apache.thrift.transport.TNonblockingServerTransport;
-import org.apache.thrift.transport.TTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -21,6 +20,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -60,12 +60,21 @@ public class RpcApplicationListener implements ApplicationListener<ApplicationCo
             serverParams.protocolFactory(new TCompactProtocol.Factory());
             serverParams.processor(new github.cheneykwok.thrift.gen.RpcService.Processor<>(rpcServiceImpl));
             TThreadedSelectorServer server = new TThreadedSelectorServer(serverParams);
-            ExecutorService executor = Executors.newFixedThreadPool(1);
+            ExecutorService executor = Executors.newFixedThreadPool(2);
+            CountDownLatch latch = new CountDownLatch(1);
             executor.execute(server::serve);
-            if (server.isServing()) {
-                log.info("rpc server start success");
-            }
-        } catch (TTransportException e) {
+            executor.execute(() -> {
+                while (true) {
+                    if (server.isServing()) {
+                        log.info("RPC started on port: 7777 (tcp) ");
+                        latch.countDown();
+                        break;
+                    }
+                }
+            });
+            latch.await();
+
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

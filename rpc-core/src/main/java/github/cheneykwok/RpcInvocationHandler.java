@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 class RpcInvocationHandler implements InvocationHandler {
 
     private final Target target;
-    private BeanFactory beanFactory;
+    private final BeanFactory beanFactory;
 
     RpcInvocationHandler(Target target, BeanFactory beanFactory) {
         this.target = target;
@@ -45,18 +45,31 @@ class RpcInvocationHandler implements InvocationHandler {
         connectionKey.setConnectTimeout(10000);
         connectionKey.setServiceProperty(new ServiceProperty("user", "localhost", 7777));
         connectionKey.settServiceClientClass(RpcService.Client.class);
-        ThriftConnectionPool connectionPool = beanFactory.getBean(ThriftConnectionPool.class);
-        RpcService.Client client = (RpcService.Client) connectionPool.borrowObject(connectionKey);
-        Request request = new Request();
-        request.setMethodName(method.getName());
-        if (args != null) {
-            request.setParameters(Arrays.stream(args).map(Object::toString).collect(Collectors.toList()));
-            request.setParameterTypes(Arrays.stream(method.getParameterTypes()).map(Class::toString).collect(Collectors.toList()));
+        Object result = null;
+        ThriftConnectionPool connectionPool = null;
+        RpcService.Client client = null;
+        try {
+            connectionPool = beanFactory.getBean(ThriftConnectionPool.class);
+            client = (RpcService.Client) connectionPool.borrowObject(connectionKey);
+            Request request = new Request();
+            request.setMethodName(method.getName());
+            if (args != null) {
+                request.setParameters(Arrays.stream(args).map(Object::toString).collect(Collectors.toList()));
+                request.setParameterTypes(Arrays.stream(method.getParameterTypes()).map(Class::toString).collect(Collectors.toList()));
+            }
+            Response response = client.request(request);
+            Class<?> returnType = method.getReturnType();
+            result = JSON.parseObject(response.getData(), returnType);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            if (connectionPool != null && client != null) {
+                connectionPool.returnObject(connectionKey, client);
+            }
         }
-        Response response = client.request(request);
-        Class<?> returnType = method.getReturnType();
-        Object object = JSON.parseObject(response.getData(), returnType);
-        return object;
+        return result;
     }
 
     @Override
