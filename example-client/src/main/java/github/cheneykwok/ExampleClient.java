@@ -15,6 +15,6 @@ public class ExampleClient {
     public static void main(String[] args) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ExampleClient.class);
         UserService userService = context.getBean(UserService.class);
-        log.info("username: {}", userService.getUser(1, "张三"));
+        log.info("username: {}", userService.getUser(1, "张三").getUsername());
     }
 }

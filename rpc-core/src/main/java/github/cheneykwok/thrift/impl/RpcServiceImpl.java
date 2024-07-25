@@ -21,7 +21,7 @@ public class RpcServiceImpl implements RpcService.Iface {
 
     @Override
     public Response request(Request request) throws TException {
-        String classStr = request.getClassCanonicalName();
+        String classCanonicalName = request.getClassCanonicalName();
         String methodName = request.getMethodName();
         List<String> parameters = request.getParameters();
         List<String> parameterTypes = request.getParameterTypes();
@@ -29,22 +29,24 @@ public class RpcServiceImpl implements RpcService.Iface {
         Class[] types = null;
         Object result = null;
         try {
-            if (!CollectionUtils.isEmpty(parameters)) {
-                // 将 string 转换为 Object
-                args = new Object[parameters.size()];
-                for (int i = 0; i < parameters.size(); i++) {
-                    args[i] = parameters.get(i);
-                }
-            }
             if (!CollectionUtils.isEmpty(parameterTypes)) {
                 // 将 string 转换为 Class
                 types = new Class[parameterTypes.size()];
                 for (int i = 0; i < parameterTypes.size(); i++) {
+                    // todo 类加载做缓存优化
                     types[i] = Class.forName(parameterTypes.get(i));
                 }
+                if (!CollectionUtils.isEmpty(parameters)) {
+                    // 将 string 转换为 Object
+                    args = new Object[parameters.size()];
+                    for (int i = 0; i < parameters.size(); i++) {
+                        Class<?> typeClass = types[i];
+                        args[i] = JSON.to(typeClass, parameters.get(i));
+                    }
+                }
             }
-//            RpcServiceProvider.keyGenerator(Class.forName(classStr), )
-            Object service = rpcServiceProvider.getService(methodName);
+            String methodKey = RpcServiceProvider.generateMethodKey(classCanonicalName, methodName, parameterTypes);
+            Object service = rpcServiceProvider.getService(methodKey);
             Method method = service.getClass().getMethod(methodName, types);
             result = method.invoke(service, args);
 

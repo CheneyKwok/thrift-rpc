@@ -53,11 +53,11 @@ class RpcInvocationHandler implements InvocationHandler {
             client = (RpcService.Client) connectionPool.borrowObject(connectionKey);
             Class<?> clazz = target.getType();
             Request request = new Request();
-            request.setClassCanonicalName(JSON.toJSONString(clazz));
+            request.setClassCanonicalName(clazz.getCanonicalName());
             request.setMethodName(method.getName());
             if (args != null) {
                 request.setParameters(Arrays.stream(args).map(Object::toString).collect(Collectors.toList()));
-                request.setParameterTypes(Arrays.stream(method.getParameterTypes()).map(Class::toString).collect(Collectors.toList()));
+                request.setParameterTypes(Arrays.stream(method.getParameterTypes()).map(Class::getCanonicalName).collect(Collectors.toList()));
             }
             Response response = client.request(request);
             Class<?> returnType = method.getReturnType();

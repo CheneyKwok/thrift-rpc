@@ -9,7 +9,7 @@ struct Response {
 }
 // 请求报文
 struct Request {
-    1:required string classCanonicalName // 类
+    1:required string classCanonicalName // 类的全限定名
     2:required string methodName // 方法名
     3:optional list<string> parameters // 方法参数
     4:optional list<string> parameterTypes // 方法参数类型
