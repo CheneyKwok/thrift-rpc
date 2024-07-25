@@ -44,7 +44,7 @@ class RpcInvocationHandler implements InvocationHandler {
         ConnectionKey connectionKey = new ConnectionKey();
         connectionKey.setConnectTimeout(10000);
         connectionKey.setServiceProperty(new ServiceProperty("user", "localhost", 7777));
-        connectionKey.settServiceClientClass(RpcService.Client.class);
+        connectionKey.setTServiceClientClass(RpcService.Client.class);
         Object result = null;
         ThriftConnectionPool connectionPool = null;
         RpcService.Client client = null;
