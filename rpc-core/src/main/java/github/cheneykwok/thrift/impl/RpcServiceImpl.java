@@ -21,6 +21,7 @@ public class RpcServiceImpl implements RpcService.Iface {
 
     @Override
     public Response request(Request request) throws TException {
+        String classStr = request.getClassCanonicalName();
         String methodName = request.getMethodName();
         List<String> parameters = request.getParameters();
         List<String> parameterTypes = request.getParameterTypes();
@@ -42,6 +43,7 @@ public class RpcServiceImpl implements RpcService.Iface {
                     types[i] = Class.forName(parameterTypes.get(i));
                 }
             }
+//            RpcServiceProvider.keyGenerator(Class.forName(classStr), )
             Object service = rpcServiceProvider.getService(methodName);
             Method method = service.getClass().getMethod(methodName, types);
             result = method.invoke(service, args);
@@ -55,4 +57,6 @@ public class RpcServiceImpl implements RpcService.Iface {
 
         return response;
     }
+
+
 }

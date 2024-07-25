@@ -51,7 +51,9 @@ class RpcInvocationHandler implements InvocationHandler {
         try {
             connectionPool = beanFactory.getBean(ThriftConnectionPool.class);
             client = (RpcService.Client) connectionPool.borrowObject(connectionKey);
+            Class<?> clazz = target.getType();
             Request request = new Request();
+            request.setClassCanonicalName(JSON.toJSONString(clazz));
             request.setMethodName(method.getName());
             if (args != null) {
                 request.setParameters(Arrays.stream(args).map(Object::toString).collect(Collectors.toList()));

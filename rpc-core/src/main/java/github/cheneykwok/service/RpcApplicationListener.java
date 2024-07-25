@@ -1,9 +1,7 @@
 package github.cheneykwok.service;
 
-import com.alibaba.fastjson2.JSON;
 import github.cheneykwok.RpcService;
 import github.cheneykwok.thrift.impl.RpcServiceImpl;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.server.TThreadedSelectorServer;
 import org.apache.thrift.transport.TNonblockingServerSocket;
@@ -16,9 +14,6 @@ import org.springframework.context.event.ApplicationContextEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.ContextStartedEvent;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -79,23 +74,5 @@ public class RpcApplicationListener implements ApplicationListener<ApplicationCo
         }
     }
 
-
-    public static String keyGenerator(Class<?> clazz, Method method) {
-        Map<String, Object> container = new HashMap<>(3);
-        // 类地址
-        container.put("class", clazz.toGenericString());
-        // 方法名称
-        container.put("methodName", method.getName());
-
-        Parameter[] parameters = method.getParameters();
-
-        // 参数列表
-        for (int i = 0; i < parameters.length; i++) {
-            container.put(String.valueOf(i), parameters[i]);
-        }
-        String jsonString = JSON.toJSONString(container);
-        // 做 SHA256 Hash 计算，得到一个 SHA256 摘要作为 Key
-        return DigestUtils.sha256Hex(jsonString);
-    }
 
 }
