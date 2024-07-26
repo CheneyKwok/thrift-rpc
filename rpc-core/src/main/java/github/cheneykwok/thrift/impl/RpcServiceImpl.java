@@ -1,22 +1,22 @@
 package github.cheneykwok.thrift.impl;
 
 import com.alibaba.fastjson2.JSON;
-import github.cheneykwok.service.RpcServiceProvider;
-import github.cheneykwok.thrift.gen.Request;
-import github.cheneykwok.thrift.gen.Response;
-import github.cheneykwok.thrift.gen.RpcService;
+import github.cheneykwok.service.RpcServiceManager;
+import github.cheneykwok.thrift.gen.inner.InnerRpcService;
+import github.cheneykwok.thrift.gen.inner.Request;
+import github.cheneykwok.thrift.gen.inner.Response;
 import org.apache.thrift.TException;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
-public class RpcServiceImpl implements RpcService.Iface {
+public class RpcServiceImpl implements InnerRpcService.Iface {
 
-    private final RpcServiceProvider rpcServiceProvider;
+    private final RpcServiceManager rpcServiceManager;
 
-    public RpcServiceImpl(RpcServiceProvider rpcServiceProvider) {
-        this.rpcServiceProvider = rpcServiceProvider;
+    public RpcServiceImpl(RpcServiceManager rpcServiceManager) {
+        this.rpcServiceManager = rpcServiceManager;
     }
 
     @Override
@@ -45,8 +45,8 @@ public class RpcServiceImpl implements RpcService.Iface {
                     }
                 }
             }
-            String methodKey = RpcServiceProvider.generateMethodKey(classCanonicalName, methodName, parameterTypes);
-            Object service = rpcServiceProvider.getService(methodKey);
+            String methodKey = RpcServiceManager.generateMethodKey(classCanonicalName, methodName, parameterTypes);
+            Object service = rpcServiceManager.getService(methodKey);
             Method method = service.getClass().getMethod(methodName, types);
             result = method.invoke(service, args);
 

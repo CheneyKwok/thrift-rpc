@@ -1,6 +1,7 @@
 package github.cheneykwok.service;
 
 import github.cheneykwok.RpcService;
+import github.cheneykwok.thrift.gen.inner.InnerRpcService;
 import github.cheneykwok.thrift.impl.RpcServiceImpl;
 import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.server.TThreadedSelectorServer;
@@ -23,12 +24,12 @@ public class RpcApplicationListener implements ApplicationListener<ApplicationCo
 
     private final Logger log = LoggerFactory.getLogger(RpcApplicationListener.class);
 
-    private final RpcServiceProvider rpcServiceProvider;
+    private final RpcServiceManager rpcServiceManager;
 
     private final RpcServiceImpl rpcServiceImpl;
 
-    public RpcApplicationListener(RpcServiceProvider rpcServiceProvider, RpcServiceImpl rpcServiceImpl) {
-        this.rpcServiceProvider = rpcServiceProvider;
+    public RpcApplicationListener(RpcServiceManager rpcServiceManager, RpcServiceImpl rpcServiceImpl) {
+        this.rpcServiceManager = rpcServiceManager;
         this.rpcServiceImpl = rpcServiceImpl;
     }
 
@@ -47,13 +48,13 @@ public class RpcApplicationListener implements ApplicationListener<ApplicationCo
         }
         Map<String, Object> rpcServiceBeans = context.getBeansWithAnnotation(RpcService.class);
         if (!rpcServiceBeans.isEmpty()) {
-            rpcServiceBeans.values().forEach(rpcServiceProvider::addService);
+            rpcServiceBeans.values().forEach(rpcServiceManager::addService);
         }
         try {
             TNonblockingServerTransport serverTransport = new TNonblockingServerSocket(7777);
             TThreadedSelectorServer.Args serverParams = new TThreadedSelectorServer.Args(serverTransport);
             serverParams.protocolFactory(new TCompactProtocol.Factory());
-            serverParams.processor(new github.cheneykwok.thrift.gen.RpcService.Processor<>(rpcServiceImpl));
+            serverParams.processor(new InnerRpcService.Processor<>(rpcServiceImpl));
             TThreadedSelectorServer server = new TThreadedSelectorServer(serverParams);
             ExecutorService executor = Executors.newFixedThreadPool(2);
             CountDownLatch latch = new CountDownLatch(1);

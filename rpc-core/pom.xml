@@ -13,8 +13,8 @@
     <version>1.0.0</version>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <thrift.version>0.20.0</thrift.version>
     </properties>
@@ -67,12 +67,21 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.thrift.tools</groupId>
                 <artifactId>maven-thrift-plugin</artifactId>
                 <version>0.1.11</version>
                 <configuration>
                     <thriftExecutable>${project.basedir}/src/main/resources/thrift/thrift-${thrift.version}.exe</thriftExecutable>
-                    <thriftSourceRoot>${project.basedir}/src/main/resources/thrift</thriftSourceRoot>
+                    <thriftSourceRoot>${project.basedir}/src/main/resources/thrift/service</thriftSourceRoot>
                     <outputDirectory>${project.basedir}/src/test/java/thrift</outputDirectory>
                     <generator>java</generator>
                 </configuration>

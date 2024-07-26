@@ -2,9 +2,9 @@ package github.cheneykwok;
 
 import com.alibaba.fastjson2.JSON;
 import github.cheneykwok.thrift.ServiceProperty;
-import github.cheneykwok.thrift.gen.Request;
-import github.cheneykwok.thrift.gen.Response;
-import github.cheneykwok.thrift.gen.RpcService;
+import github.cheneykwok.thrift.gen.inner.InnerRpcService;
+import github.cheneykwok.thrift.gen.inner.Request;
+import github.cheneykwok.thrift.gen.inner.Response;
 import github.cheneykwok.thrift.pool.ConnectionKey;
 import github.cheneykwok.thrift.pool.ThriftConnectionPool;
 import org.springframework.beans.factory.BeanFactory;
@@ -36,27 +36,25 @@ class RpcInvocationHandler implements InvocationHandler {
                 } catch (IllegalArgumentException e) {
                     return false;
                 }
-            case "hashCode":
-                return hashCode();
-            case "toString":
-                return toString();
+            case "hashCode": return hashCode();
+            case "toString": return toString();
         }
         ConnectionKey connectionKey = new ConnectionKey();
         connectionKey.setConnectTimeout(10000);
         connectionKey.setServiceProperty(new ServiceProperty("user", "localhost", 7777));
-        connectionKey.setTServiceClientClass(RpcService.Client.class);
+        connectionKey.setTServiceClientClass(InnerRpcService.Client.class);
         Object result = null;
         ThriftConnectionPool connectionPool = null;
-        RpcService.Client client = null;
+        InnerRpcService.Client client = null;
         try {
             connectionPool = beanFactory.getBean(ThriftConnectionPool.class);
-            client = (RpcService.Client) connectionPool.borrowObject(connectionKey);
+            client = (InnerRpcService.Client) connectionPool.borrowObject(connectionKey);
             Class<?> clazz = target.getType();
-            Request request = new Request();
+            Request request = new github.cheneykwok.thrift.gen.inner.Request();
             request.setClassCanonicalName(clazz.getCanonicalName());
             request.setMethodName(method.getName());
             if (args != null) {
-                request.setParameters(Arrays.stream(args).map(Object::toString).collect(Collectors.toList()));
+                request.setParameters(Arrays.stream(args).map(obj -> obj instanceof String ? obj.toString() : JSON.toJSONString(obj)).collect(Collectors.toList()));
                 request.setParameterTypes(Arrays.stream(method.getParameterTypes()).map(Class::getCanonicalName).collect(Collectors.toList()));
             }
             Response response = client.request(request);

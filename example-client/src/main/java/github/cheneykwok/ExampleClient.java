@@ -1,5 +1,6 @@
 package github.cheneykwok;
 
+import github.cheneykwok.api.User;
 import github.cheneykwok.api.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,9 @@ public class ExampleClient {
     public static void main(String[] args) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ExampleClient.class);
         UserService userService = context.getBean(UserService.class);
-        log.info("username: {}", userService.getUser(1, "张三").getUsername());
+        User user = new User();
+        user.setUserId(2);
+        user.setUsername("李四");
+        log.info("username: {}", userService.getUser(1, "张三", user).toString());
     }
 }

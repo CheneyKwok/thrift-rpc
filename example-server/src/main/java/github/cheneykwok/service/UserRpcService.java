@@ -8,8 +8,7 @@ import github.cheneykwok.api.UserService;
 public class UserRpcService implements UserService {
 
     @Override
-    public User getUser(Integer userId, String username) {
-        User user = new User();
+    public User getUser(Integer userId, String username, User user) {
         user.setUserId(userId);
         user.setUsername(username);
         return user;

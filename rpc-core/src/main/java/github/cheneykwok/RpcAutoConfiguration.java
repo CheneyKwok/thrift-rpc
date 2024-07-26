@@ -1,7 +1,7 @@
 package github.cheneykwok;
 
 import github.cheneykwok.service.RpcApplicationListener;
-import github.cheneykwok.service.RpcServiceProvider;
+import github.cheneykwok.service.RpcServiceManager;
 import github.cheneykwok.thrift.impl.RpcServiceImpl;
 import github.cheneykwok.thrift.pool.ThriftConnectionPool;
 import github.cheneykwok.thrift.pool.ThriftConnectionPoolConfig;
@@ -22,17 +22,17 @@ public class RpcAutoConfiguration {
     }
 
     @Bean
-    public RpcServiceProvider rpcServiceProvider() {
-        return new RpcServiceProvider();
+    public RpcServiceManager rpcServiceManager() {
+        return new RpcServiceManager();
     }
 
     @Bean
-    public RpcServiceImpl rpcServiceImpl(RpcServiceProvider rpcServiceProvider) {
-        return new RpcServiceImpl(rpcServiceProvider);
+    public RpcServiceImpl rpcServiceImpl(RpcServiceManager rpcServiceManager) {
+        return new RpcServiceImpl(rpcServiceManager);
     }
 
     @Bean
-    public RpcApplicationListener rpcApplicationListener(RpcServiceProvider rpcServiceProvider, RpcServiceImpl rpcServiceImpl) {
-        return new RpcApplicationListener(rpcServiceProvider, rpcServiceImpl);
+    public RpcApplicationListener rpcApplicationListener(RpcServiceManager rpcServiceManager, RpcServiceImpl rpcServiceImpl) {
+        return new RpcApplicationListener(rpcServiceManager, rpcServiceImpl);
     }
 }

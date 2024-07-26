@@ -8,9 +8,11 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public class RpcServiceProvider {
+public class RpcServiceManager {
 
-    private final Logger log = LoggerFactory.getLogger(RpcServiceProvider.class);
+    private final Logger log = LoggerFactory.getLogger(RpcServiceManager.class);
+
+    private final Set<String> ignoredMethods = Set.of("toString", "hashCode", "equals", "wait", "notify", "notifyAll");
 
     private final Map<String, Object> serviceMap;
 
@@ -18,7 +20,7 @@ public class RpcServiceProvider {
 
     private final Set<String> registeredService;
 
-    public RpcServiceProvider() {
+    public RpcServiceManager() {
         serviceMap = new ConcurrentHashMap<>();
         methodToServiceMap = new ConcurrentHashMap<>();
         registeredService = ConcurrentHashMap.newKeySet();
@@ -34,6 +36,9 @@ public class RpcServiceProvider {
         List<Class<?>> interfaces = clazz.isInterface() ? Collections.singletonList(clazz) : Arrays.asList(clazz.getInterfaces());
         for (Class<?> interfaceClass : interfaces) {
             for (Method method : methods) {
+                if (ignoredMethods.contains(method.getName())) {
+                    continue;
+                }
                 String methodKey = generateMethodKey(interfaceClass, method.getName(), method.getParameterTypes());
                 methodToServiceMap.putIfAbsent(methodKey, rpcServiceBean);
             }
