@@ -3,6 +3,7 @@ package github.cheneykwok;
 import com.alibaba.fastjson2.JSON;
 import github.cheneykwok.thrift.gen.inner.InnerRpcService;
 import github.cheneykwok.thrift.gen.inner.Request;
+import github.cheneykwok.thrift.gen.task.TaskRpcService;
 import org.apache.thrift.TException;
 import org.apache.thrift.TServiceClient;
 
@@ -32,14 +33,33 @@ public interface Client<T extends TServiceClient> {
             request.setHeader(requestTemplate.getHeader());
             request.setClassCanonicalName(clazz.getCanonicalName());
             request.setMethodName(method.getName());
+
             if (args != null) {
                 request.setParameters(Arrays.stream(args).map(obj -> obj instanceof String ? obj.toString() : JSON.toJSONString(obj)).collect(Collectors.toList()));
                 request.setParameterTypes(Arrays.stream(method.getParameterTypes()).map(Class::getCanonicalName).collect(Collectors.toList()));
             }
+
             try {
                 github.cheneykwok.thrift.gen.inner.Response response = client.request(request);
                 return response.getData();
             } catch (TException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    class TaskClient implements Client<TaskRpcService.Client> {
+        @Override
+        public Object execute(RpcRequestTemplate requestTemplate, TaskRpcService.Client client) {
+            MethodMetadata methodMetadata = requestTemplate.getMethodMetadata();
+            Class<?> clazz = methodMetadata.getTargetType();
+            Method method = methodMetadata.getMethod();
+            Class<?>[] parameterTypes = method.getParameterTypes();
+            Object[] args = methodMetadata.getArgs();
+            try {
+                method = client.getClass().getMethod(method.getName(), parameterTypes);
+                return method.invoke(client, args);
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }

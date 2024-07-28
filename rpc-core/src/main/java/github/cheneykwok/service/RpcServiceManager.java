@@ -12,7 +12,7 @@ public class RpcServiceManager {
 
     private final Logger log = LoggerFactory.getLogger(RpcServiceManager.class);
 
-    private final Set<String> ignoredMethods = Set.of("toString", "hashCode", "equals", "wait", "notify", "notifyAll");
+    private final Set<String> ignoredMethods = new HashSet<>(Arrays.asList("toString", "hashCode", "equals", "wait", "notify", "notifyAll"));
 
     private final Map<String, Object> serviceMap;
 

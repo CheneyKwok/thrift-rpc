@@ -13,7 +13,7 @@ import java.util.Map;
 @Data
 public class RpcRequestTemplate {
 
-    private final Map<String, String> header = new HashMap<>();
+    private Map<String, String> header = new HashMap<>();
 
     private ConnectionKey connectionKey;
 

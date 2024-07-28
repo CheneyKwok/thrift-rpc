@@ -17,7 +17,7 @@ struct StatusTaskRequest {
     6:required i32 afterStatus           //任务执行后状态
     7:required i32 beforeStatus          //任务执行前状态
     8:required bool isDuplicate          //任务是否需要去重
-    9:optional i32 traceId               //冗余字段
+    9:optional map<string, string> header // 请求头
 }
 
 service TaskRpcService {

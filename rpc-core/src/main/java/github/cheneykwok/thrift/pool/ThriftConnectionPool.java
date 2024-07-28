@@ -40,7 +40,9 @@ public class ThriftConnectionPool implements IConnectionPool<ConnectionKey, TSer
 
     @Override
     public void returnObject(ConnectionKey key, TServiceClient client) {
-        this.connectionPool.returnObject(key, client);
+        if (key != null && client != null) {
+            this.connectionPool.returnObject(key, client);
+        }
 
     }
 

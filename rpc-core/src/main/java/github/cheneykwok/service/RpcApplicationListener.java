@@ -2,7 +2,9 @@ package github.cheneykwok.service;
 
 import github.cheneykwok.RpcService;
 import github.cheneykwok.thrift.gen.inner.InnerRpcService;
+import github.cheneykwok.thrift.gen.task.TaskRpcService;
 import github.cheneykwok.thrift.impl.RpcServiceImpl;
+import org.apache.thrift.TMultiplexedProcessor;
 import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.server.TThreadedSelectorServer;
 import org.apache.thrift.transport.TNonblockingServerSocket;
@@ -54,7 +56,10 @@ public class RpcApplicationListener implements ApplicationListener<ApplicationCo
             TNonblockingServerTransport serverTransport = new TNonblockingServerSocket(7777);
             TThreadedSelectorServer.Args serverParams = new TThreadedSelectorServer.Args(serverTransport);
             serverParams.protocolFactory(new TCompactProtocol.Factory());
-            serverParams.processor(new InnerRpcService.Processor<>(rpcServiceImpl));
+            TMultiplexedProcessor processor = new TMultiplexedProcessor();
+            processor.registerDefault(new InnerRpcService.Processor<>(rpcServiceImpl));
+            processor.registerProcessor("task", new TaskRpcService.Processor<>(context.getBean(TaskRpcService.Iface.class)));
+            serverParams.processor(processor);
             TThreadedSelectorServer server = new TThreadedSelectorServer(serverParams);
             ExecutorService executor = Executors.newFixedThreadPool(2);
             CountDownLatch latch = new CountDownLatch(1);

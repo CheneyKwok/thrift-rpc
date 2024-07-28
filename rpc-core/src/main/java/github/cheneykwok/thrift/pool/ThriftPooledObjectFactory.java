@@ -5,6 +5,7 @@ import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
 import org.apache.thrift.TServiceClient;
 import org.apache.thrift.protocol.TCompactProtocol;
+import org.apache.thrift.protocol.TMultiplexedProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
@@ -19,7 +20,8 @@ public class ThriftPooledObjectFactory extends BaseKeyedPooledObjectFactory<Conn
         TSocket socket = new TSocket(key.getServiceProperty().getHost(), key.getServiceProperty().getPort(), key.getConnectTimeout());
         TTransport transport = new TFramedTransport(socket);
         transport.open();
-        TProtocol protocol = new TCompactProtocol(transport);
+        TProtocol tprotocol = new TCompactProtocol(transport);
+        TMultiplexedProtocol protocol = new TMultiplexedProtocol(tprotocol, "task");
         Constructor<?> cons = key.getTServiceClientClass().getConstructor(TProtocol.class);
         return (TServiceClient) cons.newInstance(protocol);
     }

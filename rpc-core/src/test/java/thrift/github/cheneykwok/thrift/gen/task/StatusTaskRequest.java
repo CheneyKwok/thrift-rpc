@@ -24,15 +24,15 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new StatusTaskRequestStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new StatusTaskRequestTupleSchemeFactory();
 
-  public @org.apache.thrift.annotation.Nullable String taskName; // required
+  public @org.apache.thrift.annotation.Nullable java.lang.String taskName; // required
   public long srcInnerId; // required
-  public @org.apache.thrift.annotation.Nullable String storeSysOutId; // required
+  public @org.apache.thrift.annotation.Nullable java.lang.String storeSysOutId; // required
   public long taskRunDate; // required
   public int taskType; // required
   public int afterStatus; // required
   public int beforeStatus; // required
   public boolean isDuplicate; // required
-  public @org.apache.thrift.annotation.Nullable java.util.Map<String, String> header; // optional
+  public @org.apache.thrift.annotation.Nullable java.util.Map<java.lang.String,java.lang.String> header; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -46,7 +46,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
     IS_DUPLICATE((short)8, "isDuplicate"),
     HEADER((short)9, "header");
 
-    private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+    private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
     static {
       for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -89,7 +89,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
      */
     public static _Fields findByThriftIdOrThrow(int fieldId) {
       _Fields fields = findByThriftId(fieldId);
-      if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+      if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
       return fields;
     }
 
@@ -97,14 +97,14 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
      * Find the _Fields constant that matches name, or null if its not found.
      */
     @org.apache.thrift.annotation.Nullable
-    public static _Fields findByName(String name) {
+    public static _Fields findByName(java.lang.String name) {
       return byName.get(name);
     }
 
     private final short _thriftId;
-    private final String _fieldName;
+    private final java.lang.String _fieldName;
 
-    _Fields(short thriftId, String fieldName) {
+    _Fields(short thriftId, java.lang.String fieldName) {
       _thriftId = thriftId;
       _fieldName = fieldName;
     }
@@ -115,7 +115,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
     }
 
     @Override
-    public String getFieldName() {
+    public java.lang.String getFieldName() {
       return _fieldName;
     }
   }
@@ -160,9 +160,9 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
   }
 
   public StatusTaskRequest(
-    String taskName,
+    java.lang.String taskName,
     long srcInnerId,
-    String storeSysOutId,
+    java.lang.String storeSysOutId,
     long taskRunDate,
     int taskType,
     int afterStatus,
@@ -204,7 +204,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
     this.beforeStatus = other.beforeStatus;
     this.isDuplicate = other.isDuplicate;
     if (other.isSetHeader()) {
-      java.util.Map<String, String> __this__header = new java.util.HashMap<String, String>(other.header);
+      java.util.Map<java.lang.String,java.lang.String> __this__header = new java.util.HashMap<java.lang.String,java.lang.String>(other.header);
       this.header = __this__header;
     }
   }
@@ -234,11 +234,11 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
   }
 
   @org.apache.thrift.annotation.Nullable
-  public String getTaskName() {
+  public java.lang.String getTaskName() {
     return this.taskName;
   }
 
-  public StatusTaskRequest setTaskName(@org.apache.thrift.annotation.Nullable String taskName) {
+  public StatusTaskRequest setTaskName(@org.apache.thrift.annotation.Nullable java.lang.String taskName) {
     this.taskName = taskName;
     return this;
   }
@@ -282,11 +282,11 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
   }
 
   @org.apache.thrift.annotation.Nullable
-  public String getStoreSysOutId() {
+  public java.lang.String getStoreSysOutId() {
     return this.storeSysOutId;
   }
 
-  public StatusTaskRequest setStoreSysOutId(@org.apache.thrift.annotation.Nullable String storeSysOutId) {
+  public StatusTaskRequest setStoreSysOutId(@org.apache.thrift.annotation.Nullable java.lang.String storeSysOutId) {
     this.storeSysOutId = storeSysOutId;
     return this;
   }
@@ -425,19 +425,19 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
     return (this.header == null) ? 0 : this.header.size();
   }
 
-  public void putToHeader(String key, String val) {
+  public void putToHeader(java.lang.String key, java.lang.String val) {
     if (this.header == null) {
-      this.header = new java.util.HashMap<String, String>();
+      this.header = new java.util.HashMap<java.lang.String,java.lang.String>();
     }
     this.header.put(key, val);
   }
 
   @org.apache.thrift.annotation.Nullable
-  public java.util.Map<String, String> getHeader() {
+  public java.util.Map<java.lang.String,java.lang.String> getHeader() {
     return this.header;
   }
 
-  public StatusTaskRequest setHeader(@org.apache.thrift.annotation.Nullable java.util.Map<String, String> header) {
+  public StatusTaskRequest setHeader(@org.apache.thrift.annotation.Nullable java.util.Map<java.lang.String,java.lang.String> header) {
     this.header = header;
     return this;
   }
@@ -458,13 +458,13 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
   }
 
   @Override
-  public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
+  public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable java.lang.Object value) {
     switch (field) {
     case TASK_NAME:
       if (value == null) {
         unsetTaskName();
       } else {
-        setTaskName((String)value);
+        setTaskName((java.lang.String)value);
       }
       break;
 
@@ -472,7 +472,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
       if (value == null) {
         unsetSrcInnerId();
       } else {
-        setSrcInnerId((Long)value);
+        setSrcInnerId((java.lang.Long)value);
       }
       break;
 
@@ -480,7 +480,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
       if (value == null) {
         unsetStoreSysOutId();
       } else {
-        setStoreSysOutId((String)value);
+        setStoreSysOutId((java.lang.String)value);
       }
       break;
 
@@ -488,7 +488,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
       if (value == null) {
         unsetTaskRunDate();
       } else {
-        setTaskRunDate((Long)value);
+        setTaskRunDate((java.lang.Long)value);
       }
       break;
 
@@ -496,7 +496,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
       if (value == null) {
         unsetTaskType();
       } else {
-        setTaskType((Integer)value);
+        setTaskType((java.lang.Integer)value);
       }
       break;
 
@@ -504,7 +504,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
       if (value == null) {
         unsetAfterStatus();
       } else {
-        setAfterStatus((Integer)value);
+        setAfterStatus((java.lang.Integer)value);
       }
       break;
 
@@ -512,7 +512,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
       if (value == null) {
         unsetBeforeStatus();
       } else {
-        setBeforeStatus((Integer)value);
+        setBeforeStatus((java.lang.Integer)value);
       }
       break;
 
@@ -520,7 +520,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
       if (value == null) {
         unsetIsDuplicate();
       } else {
-        setIsDuplicate((Boolean)value);
+        setIsDuplicate((java.lang.Boolean)value);
       }
       break;
 
@@ -528,7 +528,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
       if (value == null) {
         unsetHeader();
       } else {
-        setHeader((java.util.Map<String, String>)value);
+        setHeader((java.util.Map<java.lang.String,java.lang.String>)value);
       }
       break;
 
@@ -537,7 +537,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
 
   @org.apache.thrift.annotation.Nullable
   @Override
-  public Object getFieldValue(_Fields field) {
+  public java.lang.Object getFieldValue(_Fields field) {
     switch (field) {
     case TASK_NAME:
       return getTaskName();
@@ -567,14 +567,14 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
       return getHeader();
 
     }
-    throw new IllegalStateException();
+    throw new java.lang.IllegalStateException();
   }
 
   /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
   @Override
   public boolean isSet(_Fields field) {
     if (field == null) {
-      throw new IllegalArgumentException();
+      throw new java.lang.IllegalArgumentException();
     }
 
     switch (field) {
@@ -597,11 +597,11 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
     case HEADER:
       return isSetHeader();
     }
-    throw new IllegalStateException();
+    throw new java.lang.IllegalStateException();
   }
 
   @Override
-  public boolean equals(Object that) {
+  public boolean equals(java.lang.Object that) {
     if (that instanceof StatusTaskRequest)
       return this.equals((StatusTaskRequest)that);
     return false;
@@ -736,7 +736,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
 
     int lastComparison = 0;
 
-    lastComparison = Boolean.compare(isSetTaskName(), other.isSetTaskName());
+    lastComparison = java.lang.Boolean.compare(isSetTaskName(), other.isSetTaskName());
     if (lastComparison != 0) {
       return lastComparison;
     }
@@ -746,7 +746,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
         return lastComparison;
       }
     }
-    lastComparison = Boolean.compare(isSetSrcInnerId(), other.isSetSrcInnerId());
+    lastComparison = java.lang.Boolean.compare(isSetSrcInnerId(), other.isSetSrcInnerId());
     if (lastComparison != 0) {
       return lastComparison;
     }
@@ -756,7 +756,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
         return lastComparison;
       }
     }
-    lastComparison = Boolean.compare(isSetStoreSysOutId(), other.isSetStoreSysOutId());
+    lastComparison = java.lang.Boolean.compare(isSetStoreSysOutId(), other.isSetStoreSysOutId());
     if (lastComparison != 0) {
       return lastComparison;
     }
@@ -766,7 +766,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
         return lastComparison;
       }
     }
-    lastComparison = Boolean.compare(isSetTaskRunDate(), other.isSetTaskRunDate());
+    lastComparison = java.lang.Boolean.compare(isSetTaskRunDate(), other.isSetTaskRunDate());
     if (lastComparison != 0) {
       return lastComparison;
     }
@@ -776,7 +776,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
         return lastComparison;
       }
     }
-    lastComparison = Boolean.compare(isSetTaskType(), other.isSetTaskType());
+    lastComparison = java.lang.Boolean.compare(isSetTaskType(), other.isSetTaskType());
     if (lastComparison != 0) {
       return lastComparison;
     }
@@ -786,7 +786,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
         return lastComparison;
       }
     }
-    lastComparison = Boolean.compare(isSetAfterStatus(), other.isSetAfterStatus());
+    lastComparison = java.lang.Boolean.compare(isSetAfterStatus(), other.isSetAfterStatus());
     if (lastComparison != 0) {
       return lastComparison;
     }
@@ -796,7 +796,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
         return lastComparison;
       }
     }
-    lastComparison = Boolean.compare(isSetBeforeStatus(), other.isSetBeforeStatus());
+    lastComparison = java.lang.Boolean.compare(isSetBeforeStatus(), other.isSetBeforeStatus());
     if (lastComparison != 0) {
       return lastComparison;
     }
@@ -806,7 +806,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
         return lastComparison;
       }
     }
-    lastComparison = Boolean.compare(isSetIsDuplicate(), other.isSetIsDuplicate());
+    lastComparison = java.lang.Boolean.compare(isSetIsDuplicate(), other.isSetIsDuplicate());
     if (lastComparison != 0) {
       return lastComparison;
     }
@@ -816,7 +816,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
         return lastComparison;
       }
     }
-    lastComparison = Boolean.compare(isSetHeader(), other.isSetHeader());
+    lastComparison = java.lang.Boolean.compare(isSetHeader(), other.isSetHeader());
     if (lastComparison != 0) {
       return lastComparison;
     }
@@ -846,8 +846,8 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
   }
 
   @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder("StatusTaskRequest(");
+  public java.lang.String toString() {
+    java.lang.StringBuilder sb = new java.lang.StringBuilder("StatusTaskRequest(");
     boolean first = true;
 
     sb.append("taskName:");
@@ -928,7 +928,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
     }
   }
 
-  private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+  private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
     try {
       // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
       __isset_bitfield = 0;
@@ -1026,9 +1026,9 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
             if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
               {
                 org.apache.thrift.protocol.TMap _map0 = iprot.readMapBegin();
-                struct.header = new java.util.HashMap<String, String>(2*_map0.size);
-                @org.apache.thrift.annotation.Nullable String _key1;
-                @org.apache.thrift.annotation.Nullable String _val2;
+                struct.header = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map0.size);
+                @org.apache.thrift.annotation.Nullable java.lang.String _key1;
+                @org.apache.thrift.annotation.Nullable java.lang.String _val2;
                 for (int _i3 = 0; _i3 < _map0.size; ++_i3)
                 {
                   _key1 = iprot.readString();
@@ -1109,7 +1109,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
           oprot.writeFieldBegin(HEADER_FIELD_DESC);
           {
             oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, struct.header.size()));
-            for (java.util.Map.Entry<String, String> _iter4 : struct.header.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter4 : struct.header.entrySet())
             {
               oprot.writeString(_iter4.getKey());
               oprot.writeString(_iter4.getValue());
@@ -1153,7 +1153,7 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
       if (struct.isSetHeader()) {
         {
           oprot.writeI32(struct.header.size());
-          for (java.util.Map.Entry<String, String> _iter5 : struct.header.entrySet())
+          for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter5 : struct.header.entrySet())
           {
             oprot.writeString(_iter5.getKey());
             oprot.writeString(_iter5.getValue());
@@ -1185,9 +1185,9 @@ public class StatusTaskRequest implements org.apache.thrift.TBase<StatusTaskRequ
       if (incoming.get(0)) {
         {
           org.apache.thrift.protocol.TMap _map6 = iprot.readMapBegin(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING); 
-          struct.header = new java.util.HashMap<String, String>(2*_map6.size);
-          @org.apache.thrift.annotation.Nullable String _key7;
-          @org.apache.thrift.annotation.Nullable String _val8;
+          struct.header = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map6.size);
+          @org.apache.thrift.annotation.Nullable java.lang.String _key7;
+          @org.apache.thrift.annotation.Nullable java.lang.String _val8;
           for (int _i9 = 0; _i9 < _map6.size; ++_i9)
           {
             _key7 = iprot.readString();

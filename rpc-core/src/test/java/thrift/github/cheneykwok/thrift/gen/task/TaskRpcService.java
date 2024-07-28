@@ -113,8 +113,8 @@ public class TaskRpcService {
 
       @Override
       public StatusTaskRespon getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -127,14 +127,14 @@ public class TaskRpcService {
   public static class Processor<I extends Iface> extends org.apache.thrift.TBaseProcessor<I> implements org.apache.thrift.TProcessor {
     private static final org.slf4j.Logger _LOGGER = org.slf4j.LoggerFactory.getLogger(Processor.class.getName());
     public Processor(I iface) {
-      super(iface, getProcessMap(new java.util.HashMap<String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>>()));
+      super(iface, getProcessMap(new java.util.HashMap<java.lang.String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>>()));
     }
 
-    protected Processor(I iface, java.util.Map<String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> processMap) {
+    protected Processor(I iface, java.util.Map<java.lang.String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> processMap) {
       super(iface, getProcessMap(processMap));
     }
 
-    private static <I extends Iface> java.util.Map<String,  org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> getProcessMap(java.util.Map<String, org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
+    private static <I extends Iface> java.util.Map<java.lang.String,  org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> getProcessMap(java.util.Map<java.lang.String, org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
       processMap.put("StatusTask", new StatusTask());
       return processMap;
     }
@@ -172,14 +172,14 @@ public class TaskRpcService {
   public static class AsyncProcessor<I extends AsyncIface> extends org.apache.thrift.TBaseAsyncProcessor<I> {
     private static final org.slf4j.Logger _LOGGER = org.slf4j.LoggerFactory.getLogger(AsyncProcessor.class.getName());
     public AsyncProcessor(I iface) {
-      super(iface, getProcessMap(new java.util.HashMap<String, org.apache.thrift.AsyncProcessFunction<I, ? extends org.apache.thrift.TBase, ?>>()));
+      super(iface, getProcessMap(new java.util.HashMap<java.lang.String, org.apache.thrift.AsyncProcessFunction<I, ? extends org.apache.thrift.TBase, ?>>()));
     }
 
-    protected AsyncProcessor(I iface, java.util.Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
+    protected AsyncProcessor(I iface, java.util.Map<java.lang.String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
       super(iface, getProcessMap(processMap));
     }
 
-    private static <I extends AsyncIface> java.util.Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase,?>> getProcessMap(java.util.Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
+    private static <I extends AsyncIface> java.util.Map<java.lang.String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase,?>> getProcessMap(java.util.Map<java.lang.String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
       processMap.put("StatusTask", new StatusTask());
       return processMap;
     }
@@ -207,13 +207,13 @@ public class TaskRpcService {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
           @Override
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             StatusTask_result result = new StatusTask_result();
@@ -232,7 +232,7 @@ public class TaskRpcService {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -268,7 +268,7 @@ public class TaskRpcService {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       REQUEST((short)1, "request");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -295,7 +295,7 @@ public class TaskRpcService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
@@ -303,14 +303,14 @@ public class TaskRpcService {
        * Find the _Fields constant that matches name, or null if its not found.
        */
       @org.apache.thrift.annotation.Nullable
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -321,7 +321,7 @@ public class TaskRpcService {
       }
 
       @Override
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -391,7 +391,7 @@ public class TaskRpcService {
     }
 
     @Override
-    public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
+    public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable java.lang.Object value) {
       switch (field) {
       case REQUEST:
         if (value == null) {
@@ -406,31 +406,31 @@ public class TaskRpcService {
 
     @org.apache.thrift.annotation.Nullable
     @Override
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case REQUEST:
         return getRequest();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     @Override
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case REQUEST:
         return isSetRequest();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that instanceof StatusTask_args)
         return this.equals((StatusTask_args)that);
       return false;
@@ -473,7 +473,7 @@ public class TaskRpcService {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.compare(isSetRequest(), other.isSetRequest());
+      lastComparison = java.lang.Boolean.compare(isSetRequest(), other.isSetRequest());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -503,8 +503,8 @@ public class TaskRpcService {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("StatusTask_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("StatusTask_args(");
       boolean first = true;
 
       sb.append("request:");
@@ -537,7 +537,7 @@ public class TaskRpcService {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -645,7 +645,7 @@ public class TaskRpcService {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -672,7 +672,7 @@ public class TaskRpcService {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
@@ -680,14 +680,14 @@ public class TaskRpcService {
        * Find the _Fields constant that matches name, or null if its not found.
        */
       @org.apache.thrift.annotation.Nullable
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -698,7 +698,7 @@ public class TaskRpcService {
       }
 
       @Override
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -768,7 +768,7 @@ public class TaskRpcService {
     }
 
     @Override
-    public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable Object value) {
+    public void setFieldValue(_Fields field, @org.apache.thrift.annotation.Nullable java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -783,31 +783,31 @@ public class TaskRpcService {
 
     @org.apache.thrift.annotation.Nullable
     @Override
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     @Override
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that instanceof StatusTask_result)
         return this.equals((StatusTask_result)that);
       return false;
@@ -850,7 +850,7 @@ public class TaskRpcService {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.compare(isSetSuccess(), other.isSetSuccess());
+      lastComparison = java.lang.Boolean.compare(isSetSuccess(), other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -879,8 +879,8 @@ public class TaskRpcService {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("StatusTask_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("StatusTask_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -910,7 +910,7 @@ public class TaskRpcService {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
