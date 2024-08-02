@@ -1,28 +1,39 @@
 package github.cheneykwok;
 
 import com.alibaba.fastjson2.JSON;
-import github.cheneykwok.thrift.ServiceProperty;
+import github.cheneykwok.client.ClientContext;
+import github.cheneykwok.client.ServiceKey;
+import github.cheneykwok.client.properties.ClientProperties;
+import github.cheneykwok.thrift.gen.inner.InnerRequest;
+import github.cheneykwok.thrift.gen.inner.InnerResponse;
 import github.cheneykwok.thrift.gen.inner.InnerRpcService;
-import github.cheneykwok.thrift.gen.inner.Request;
-import github.cheneykwok.thrift.gen.inner.Response;
-import github.cheneykwok.thrift.pool.ConnectionKey;
-import github.cheneykwok.thrift.pool.ThriftConnectionPool;
-import org.springframework.beans.factory.BeanFactory;
+import github.cheneykwok.thrift.pool.ThriftClientPool;
+import org.apache.thrift.TServiceClient;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import java.util.Map;
 
-class RpcInvocationHandler implements InvocationHandler {
+public class RpcInvocationHandler implements InvocationHandler {
 
-    private final Target target;
-    private final BeanFactory beanFactory;
+    private final String serverId;
 
-    RpcInvocationHandler(Target target, BeanFactory beanFactory) {
+    private final Class<?> target;
+
+    private final Class<?> ifaceClass;
+
+    private ClientProperties clientProperties;
+
+    private ThriftClientPool clientPool;
+
+    public RpcInvocationHandler(String serverId, Class<?> ifaceClass, Class<?> target) {
+        this.serverId = serverId;
+        this.ifaceClass = ifaceClass;
         this.target = target;
-        this.beanFactory = beanFactory;
     }
 
     @Override
@@ -36,40 +47,68 @@ class RpcInvocationHandler implements InvocationHandler {
                 } catch (IllegalArgumentException e) {
                     return false;
                 }
-            case "hashCode": return hashCode();
-            case "toString": return toString();
+            case "hashCode":
+                return hashCode();
+            case "toString":
+                return toString();
         }
-        ConnectionKey connectionKey = new ConnectionKey();
-        connectionKey.setConnectTimeout(10000);
-        connectionKey.setServiceProperty(new ServiceProperty("user", "localhost", 7777));
-        connectionKey.setTServiceClientClass(InnerRpcService.Client.class);
+        if (clientProperties == null) {
+            clientProperties = ClientContext.context().getClientProperties();
+        }
+        if (clientPool == null) {
+            clientPool = ClientContext.context().getClientPool();
+        }
+
+        Map<String, String> serverAddrList = clientProperties.getServerAddrList();
+        String serverAddr = serverAddrList.get(serverId);
+        if (serverAddr == null) {
+            throw new RuntimeException("No server address found for serverId: " + serverId);
+        }
+        String[] address = serverAddr.split(":");
+        ServiceKey serviceKey = ServiceKey
+                .builder()
+                .host(address[0])
+                .port(Integer.parseInt(address[1]))
+                .connectTimeout(clientProperties.getConnectTimeout())
+                .serviceInterfaceClass(ifaceClass)
+                .build();
         Object result = null;
-        ThriftConnectionPool connectionPool = null;
-        InnerRpcService.Client client = null;
+        TServiceClient client = null;
         try {
-            connectionPool = beanFactory.getBean(ThriftConnectionPool.class);
-            client = (InnerRpcService.Client) connectionPool.borrowObject(connectionKey);
-            Class<?> clazz = target.getType();
-            Request request = new github.cheneykwok.thrift.gen.inner.Request();
-            request.setClassCanonicalName(clazz.getCanonicalName());
-            request.setMethodName(method.getName());
-            if (args != null) {
-                request.setParameters(Arrays.stream(args).map(obj -> obj instanceof String ? obj.toString() : JSON.toJSONString(obj)).collect(Collectors.toList()));
-                request.setParameterTypes(Arrays.stream(method.getParameterTypes()).map(Class::getCanonicalName).collect(Collectors.toList()));
+            client = clientPool.borrowObject(serviceKey);
+            if (client instanceof InnerRpcService.Client innerRpcClient) {
+                String path = getPath(proxy, method);
+
+                InnerRequest request = new InnerRequest();
+                request.setPath(path);
+                request.setArg(JSON.toJSONString(args));
+                InnerResponse response = innerRpcClient.request(request);
+                Class<?> returnType = method.getReturnType();
+                result = JSON.parseObject(response.getData(), returnType);
+            } else {
+                return ReflectionUtils.invokeMethod(method, client, args);
             }
-            Response response = client.request(request);
-            Class<?> returnType = method.getReturnType();
-            result = JSON.parseObject(response.getData(), returnType);
 
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         } finally {
-            if (connectionPool != null && client != null) {
-                connectionPool.returnObject(connectionKey, client);
-            }
+            clientPool.returnObject(serviceKey, client);
         }
         return result;
+    }
+
+    private String getPath(Object proxy, Method method) {
+        RpcMapping methodMapping = method.getAnnotation(RpcMapping.class);
+        if (methodMapping == null || !StringUtils.hasText(methodMapping.value())) {
+            throw new IllegalStateException("@RpcMapping value must not be empty, method: " + method.toGenericString());
+        }
+        String path = methodMapping.value();
+        RpcMapping classMapping = AnnotationUtils.findAnnotation(proxy.getClass(), RpcMapping.class);
+        if (classMapping != null && StringUtils.hasText(classMapping.value())) {
+            path = classMapping.value() + path;
+        }
+        return path;
     }
 
     @Override

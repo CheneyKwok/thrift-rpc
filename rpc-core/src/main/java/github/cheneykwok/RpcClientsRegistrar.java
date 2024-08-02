@@ -1,5 +1,9 @@
 package github.cheneykwok;
 
+import github.cheneykwok.client.ClientFactoryBean;
+import github.cheneykwok.client.RpcClient;
+import github.cheneykwok.client.ThriftConstant;
+import github.cheneykwok.thrift.gen.inner.InnerRpcService;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -27,7 +31,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 对RpcClient注解的接口进行属性解析，然后转换成BeanDefinition纳入容器管理
+ * 客户端注册器
+ *
+ * <p>解析 RpcClient 注解的接口，转换成 BeanDefinition 纳入容器管理</p>
+ *
  * @author gzc
  * @date 2024-07-21
  */
@@ -67,9 +74,8 @@ public class RpcClientsRegistrar implements ImportBeanDefinitionRegistrar, Resou
             candidateComponents.addAll(scanner.findCandidateComponents(basePackage));
         }
         for (BeanDefinition candidateComponent : candidateComponents) {
-            if (candidateComponent instanceof AnnotatedBeanDefinition) {
-                // verify annotated class is an interface
-                AnnotatedBeanDefinition beanDefinition = (AnnotatedBeanDefinition) candidateComponent;
+            if (candidateComponent instanceof AnnotatedBeanDefinition beanDefinition) {
+
                 AnnotationMetadata annotationMetadata = beanDefinition.getMetadata();
                 Assert.isTrue(annotationMetadata.isInterface(), "@RpcClient can only be specified on an interface");
 
@@ -89,20 +95,36 @@ public class RpcClientsRegistrar implements ImportBeanDefinitionRegistrar, Resou
         String className = annotationMetadata.getClassName();
         Class clazz = ClassUtils.resolveClassName(className, null);
         ConfigurableBeanFactory beanFactory = registry instanceof ConfigurableBeanFactory ? (ConfigurableBeanFactory) registry : null;
-        String rpcServiceName = rpcClientAttrs.getString("name");
-        if (!StringUtils.hasText(rpcServiceName)) {
-            throw new IllegalStateException("'name' must be provided in @" + RpcClient.class.getSimpleName());
+        String serverId = rpcClientAttrs.getString("serverId");
+        if (!StringUtils.hasText(serverId)) {
+            throw new IllegalStateException("'serverId' must be provided in @" + RpcClient.class.getSimpleName() + " on class: " + className);
         }
-        RpcClientFactoryBean factoryBean = new RpcClientFactoryBean();
+        Class<?> ifaceClass = getIfaceClass(className);
+        ClientFactoryBean factoryBean = new ClientFactoryBean();
         factoryBean.setBeanFactory(beanFactory);
         factoryBean.setType(clazz);
-        factoryBean.setName(rpcServiceName);
+        factoryBean.setServerId(serverId);
+        factoryBean.setIfaceClass(ifaceClass);
         BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(clazz, factoryBean::getObject);
         beanDefinitionBuilder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
         beanDefinitionBuilder.setLazyInit(true);
         AbstractBeanDefinition beanDefinition = beanDefinitionBuilder.getBeanDefinition();
         BeanDefinitionHolder holder = new BeanDefinitionHolder(beanDefinition, className);
         BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);
+    }
+
+    private Class<?> getIfaceClass(String className) {
+        Class<?> ifaceClass;
+        if (className.endsWith(ThriftConstant.THRIFT_IFACE)) {
+            try {
+                ifaceClass = Class.forName(className);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            ifaceClass = InnerRpcService.Iface.class;
+        }
+        return ifaceClass;
     }
 
     private Set<String> getBasePackages(AnnotationMetadata importingClassMetadata, AnnotationAttributes enableAttrs) {

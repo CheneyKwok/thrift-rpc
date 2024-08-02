@@ -1,0 +1,11 @@
+rpc:
+  client:
+    server-addr-list:
+      user: 127.0.0.1:7777
+    retry-times: 6
+    connect-timeout: 2000
+
+user: 1
+
+server:
+  port: -1

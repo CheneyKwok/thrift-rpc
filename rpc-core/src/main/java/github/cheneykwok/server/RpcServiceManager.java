@@ -1,4 +1,4 @@
-package github.cheneykwok.service;
+package github.cheneykwok.server;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

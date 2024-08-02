@@ -1,4 +1,4 @@
-package github.cheneykwok.service;
+package github.cheneykwok.server;
 
 import github.cheneykwok.thrift.gen.task.StatusTaskRequest;
 import github.cheneykwok.thrift.gen.task.StatusTaskRespon;

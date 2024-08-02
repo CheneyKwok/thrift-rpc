@@ -1,6 +1,5 @@
-package github.cheneykwok;
+package github.cheneykwok.client;
 
-import java.lang.annotation.Target;
 import java.lang.annotation.*;
 
 /**
@@ -12,7 +11,9 @@ import java.lang.annotation.*;
 public @interface RpcClient {
 
     /**
-     * 服务ID
+     * 服务端ID
      */
-    String name() default "";
+    String serverId() default "";
+
+    String prefix() default "";
 }

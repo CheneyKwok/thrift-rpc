@@ -1,4 +1,4 @@
-package github.cheneykwok.service;
+package github.cheneykwok.server;
 
 import github.cheneykwok.RpcService;
 import github.cheneykwok.thrift.gen.inner.InnerRpcService;
@@ -57,8 +57,8 @@ public class RpcApplicationListener implements ApplicationListener<ApplicationCo
             TThreadedSelectorServer.Args serverParams = new TThreadedSelectorServer.Args(serverTransport);
             serverParams.protocolFactory(new TCompactProtocol.Factory());
             TMultiplexedProcessor processor = new TMultiplexedProcessor();
-            processor.registerDefault(new InnerRpcService.Processor<>(rpcServiceImpl));
-            processor.registerProcessor("task", new TaskRpcService.Processor<>(context.getBean(TaskRpcService.Iface.class)));
+            processor.registerProcessor(InnerRpcService.Iface.class.getName(), new InnerRpcService.Processor<>(rpcServiceImpl));
+            processor.registerProcessor(TaskRpcService.Iface.class.getName(), new TaskRpcService.Processor<>(context.getBean(TaskRpcService.Iface.class)));
             serverParams.processor(processor);
             TThreadedSelectorServer server = new TThreadedSelectorServer(serverParams);
             ExecutorService executor = Executors.newFixedThreadPool(2);

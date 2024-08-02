@@ -1,4 +1,4 @@
-package github.cheneykwok.service;
+package github.cheneykwok.server;
 
 import java.lang.annotation.*;
 

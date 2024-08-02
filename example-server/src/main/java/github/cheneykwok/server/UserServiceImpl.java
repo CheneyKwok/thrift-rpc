@@ -1,11 +1,11 @@
-package github.cheneykwok.service;
+package github.cheneykwok.server;
 
-import github.cheneykwok.RpcService;
 import github.cheneykwok.api.User;
-import github.cheneykwok.api.UserService;
+import github.cheneykwok.api.UserRpcService;
+import org.springframework.stereotype.Service;
 
-@RpcService
-public class UserRpcService implements UserService {
+@Service
+public class UserServiceImpl implements UserRpcService {
 
     @Override
     public User getUser(Integer userId, String username, User user) {

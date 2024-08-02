@@ -1,60 +1,53 @@
 package github.cheneykwok.thrift.impl;
 
 import com.alibaba.fastjson2.JSON;
-import github.cheneykwok.service.RpcServiceManager;
+import github.cheneykwok.MappingMethod;
+import github.cheneykwok.RpcMappingHandler;
+import github.cheneykwok.thrift.gen.inner.InnerRequest;
+import github.cheneykwok.thrift.gen.inner.InnerResponse;
 import github.cheneykwok.thrift.gen.inner.InnerRpcService;
-import github.cheneykwok.thrift.gen.inner.Request;
-import github.cheneykwok.thrift.gen.inner.Response;
 import org.apache.thrift.TException;
-import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
 public class RpcServiceImpl implements InnerRpcService.Iface {
 
-    private final RpcServiceManager rpcServiceManager;
+    private final RpcMappingHandler mappingHandler;
 
-    public RpcServiceImpl(RpcServiceManager rpcServiceManager) {
-        this.rpcServiceManager = rpcServiceManager;
+    public RpcServiceImpl(RpcMappingHandler mappingHandler) {
+        this.mappingHandler = mappingHandler;
     }
 
     @Override
-    public Response request(Request request) throws TException {
-        String classCanonicalName = request.getClassCanonicalName();
-        String methodName = request.getMethodName();
-        List<String> parameters = request.getParameters();
-        List<String> parameterTypes = request.getParameterTypes();
+    public InnerResponse request(InnerRequest request) throws TException {
+        String path = request.getPath();
+        String arg = request.getArg();
         Object[] args = null;
-        Class[] types = null;
-        Object result = null;
+        Object result;
         try {
-            if (!CollectionUtils.isEmpty(parameterTypes)) {
-                // 将 string 转换为 Class
-                types = new Class[parameterTypes.size()];
-                for (int i = 0; i < parameterTypes.size(); i++) {
-                    // todo 类加载做缓存优化
-                    types[i] = Class.forName(parameterTypes.get(i));
+            MappingMethod mappingMethod = mappingHandler.getMethodMapping(path);
+            if (mappingMethod == null) {
+                return new InnerResponse(404, "not found", false);
+            }
+            if (arg != null) {
+                List<String> requestArgs = JSON.parseArray(arg, String.class);
+                Method method = mappingMethod.getMethod();
+                Class<?>[] parameterTypes = method.getParameterTypes();
+                if (parameterTypes.length != requestArgs.size()) {
+                    return new InnerResponse(400, "参数个数不匹配", false);
                 }
-                if (!CollectionUtils.isEmpty(parameters)) {
-                    // 将 string 转换为 Object
-                    args = new Object[parameters.size()];
-                    for (int i = 0; i < parameters.size(); i++) {
-                        Class<?> typeClass = types[i];
-                        args[i] = JSON.to(typeClass, parameters.get(i));
-                    }
+                args = new Object[parameterTypes.length];
+                for (int i = 0; i < parameterTypes.length; i++) {
+                    args[i] = JSON.to(parameterTypes[i], requestArgs.get(i));
                 }
             }
-            String methodKey = RpcServiceManager.generateMethodKey(classCanonicalName, methodName, parameterTypes);
-            Object service = rpcServiceManager.getService(methodKey);
-            Method method = service.getClass().getMethod(methodName, types);
-            result = method.invoke(service, args);
-
+            result = mappingMethod.doInvoke(args);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException();
         }
-        Response response = new Response(200, "success", true);
+        InnerResponse response = new InnerResponse(200, "success", true);
         response.setData(JSON.toJSONString(result));
 
         return response;
