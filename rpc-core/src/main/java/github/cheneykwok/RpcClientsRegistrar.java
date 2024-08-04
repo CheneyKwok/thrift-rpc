@@ -2,7 +2,6 @@ package github.cheneykwok;
 
 import github.cheneykwok.client.ClientFactoryBean;
 import github.cheneykwok.client.RpcClient;
-import github.cheneykwok.client.ThriftConstant;
 import github.cheneykwok.thrift.gen.inner.InnerRpcService;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;

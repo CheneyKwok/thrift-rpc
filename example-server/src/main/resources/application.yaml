@@ -1,2 +1,9 @@
 server:
   port: 9090
+
+rpc:
+  server:
+    enabled: true
+    model: threaded_selector
+    threaded-selector:
+      core-worker-threads: 10

@@ -1,4 +1,4 @@
-package github.cheneykwok.client;
+package github.cheneykwok;
 
 /**
  * @author gzc

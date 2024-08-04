@@ -7,6 +7,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.MethodIntrospector;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
@@ -21,7 +22,7 @@ import java.util.Map;
  * @date 2024-07-31
  */
 @Component
-public class RpcMappingHandler implements InitializingBean, ApplicationContextAware {
+public class RpcMappingHandler implements InitializingBean, ApplicationContextAware, Ordered {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -103,5 +104,10 @@ public class RpcMappingHandler implements InitializingBean, ApplicationContextAw
 
     public MappingMethod getMethodMapping(String path) {
         return methodMappings.get(path);
+    }
+
+    @Override
+    public int getOrder() {
+        return Integer.MAX_VALUE;
     }
 }

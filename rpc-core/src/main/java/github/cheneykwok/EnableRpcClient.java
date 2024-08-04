@@ -1,8 +1,5 @@
 package github.cheneykwok;
 
-import org.springframework.context.annotation.Import;
-
-import java.lang.annotation.Target;
 import java.lang.annotation.*;
 
 /**
@@ -14,7 +11,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import(RpcClientsRegistrar.class)
+//@Import(RpcClientsRegistrar.class)
 public @interface EnableRpcClient {
 
     String[] basePackages() default {};

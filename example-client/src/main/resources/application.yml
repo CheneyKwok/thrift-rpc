@@ -1,11 +1,10 @@
 rpc:
   client:
     server-addr-list:
-      user: 127.0.0.1:7777
+      user: 127.0.0.1:40880
     retry-times: 6
     connect-timeout: 2000
-
-user: 1
+    server-model: threaded_selector
 
 server:
   port: -1

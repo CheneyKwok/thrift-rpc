@@ -1,24 +1,26 @@
 package github.cheneykwok.client;
 
-import github.cheneykwok.RpcMappingHandler;
+import github.cheneykwok.RpcClientsRegistrar;
+import github.cheneykwok.client.pool.ThriftClientKeyedPooledObjectFactory;
+import github.cheneykwok.client.pool.ThriftClientPool;
 import github.cheneykwok.client.properties.ClientPoolProperties;
 import github.cheneykwok.client.properties.ClientProperties;
-import github.cheneykwok.server.RpcApplicationListener;
-import github.cheneykwok.server.RpcServiceManager;
-import github.cheneykwok.thrift.impl.RpcServiceImpl;
-import github.cheneykwok.thrift.pool.ThriftClientKeyedPooledObjectFactory;
-import github.cheneykwok.thrift.pool.ThriftClientPool;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
 import org.apache.thrift.TServiceClient;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
 import java.time.Duration;
 
+
 @AutoConfiguration
-@EnableConfigurationProperties({ClientProperties.class})
+@ConditionalOnProperty(prefix = "rpc.client", name = {"enabled"}, havingValue = "true")
+@Import(RpcClientsRegistrar.class)
+@EnableConfigurationProperties({ClientProperties.class, ClientPoolProperties.class})
 public class RpcClientAutoConfiguration {
 
     @Bean
@@ -50,21 +52,6 @@ public class RpcClientAutoConfiguration {
     public ThriftClientPool thriftTransportPool(
             ThriftClientKeyedPooledObjectFactory factory, GenericKeyedObjectPoolConfig<TServiceClient> config) {
         return new ThriftClientPool(factory, config);
-    }
-
-    @Bean
-    public RpcServiceManager rpcServiceManager() {
-        return new RpcServiceManager();
-    }
-
-    @Bean
-    public RpcServiceImpl rpcServiceImpl(RpcMappingHandler rpcMappingHandler) {
-        return new RpcServiceImpl(rpcMappingHandler);
-    }
-
-    @Bean
-    public RpcApplicationListener rpcApplicationListener(RpcServiceManager rpcServiceManager, RpcServiceImpl rpcServiceImpl) {
-        return new RpcApplicationListener(rpcServiceManager, rpcServiceImpl);
     }
 
     @Bean

@@ -1,18 +1,22 @@
-package github.cheneykwok.thrift.pool;
+package github.cheneykwok.client.pool;
 
 import github.cheneykwok.client.ServiceKey;
 import org.apache.commons.pool2.KeyedPooledObjectFactory;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
 import org.apache.thrift.TServiceClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ * Thrift Client 对象池
+ *
+ * @author gzc
+ * @date 2024-07-26
+ */
 public class ThriftClientPool extends GenericKeyedObjectPool<ServiceKey, TServiceClient> {
 
-    private static final Logger logger = LoggerFactory.getLogger(ThriftClientPool.class);
+    public ThriftClientPool(KeyedPooledObjectFactory<ServiceKey, TServiceClient> factory,
+                            GenericKeyedObjectPoolConfig<TServiceClient> config) {
 
-    public ThriftClientPool(KeyedPooledObjectFactory<ServiceKey, TServiceClient> factory, GenericKeyedObjectPoolConfig<TServiceClient> config) {
         super(factory, config);
     }
 
@@ -23,7 +27,7 @@ public class ThriftClientPool extends GenericKeyedObjectPool<ServiceKey, TServic
 
     @Override
     public void returnObject(ServiceKey serviceKey, TServiceClient client) {
-        if (client != null) {
+        if (serviceKey != null && client != null) {
             super.returnObject(serviceKey, client);
         }
     }

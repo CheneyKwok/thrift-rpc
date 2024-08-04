@@ -1,9 +1,9 @@
 package github.cheneykwok.api;
 
 import github.cheneykwok.RpcRequestInterceptor;
+import github.cheneykwok.client.pool.ThriftClientPool;
 import github.cheneykwok.thrift.gen.task.StatusTaskRequest;
 import github.cheneykwok.thrift.gen.task.StatusTaskRespon;
-import github.cheneykwok.thrift.pool.ThriftClientPool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 public class TaskServiceImpl implements TaskService {
 
-    @Autowired
+    @Autowired(required = false)
     private ThriftClientPool connectionPool;
 
     @Autowired(required = false)

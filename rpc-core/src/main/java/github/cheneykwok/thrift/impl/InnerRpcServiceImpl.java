@@ -11,11 +11,11 @@ import org.apache.thrift.TException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-public class RpcServiceImpl implements InnerRpcService.Iface {
+public class InnerRpcServiceImpl implements InnerRpcService.Iface {
 
     private final RpcMappingHandler mappingHandler;
 
-    public RpcServiceImpl(RpcMappingHandler mappingHandler) {
+    public InnerRpcServiceImpl(RpcMappingHandler mappingHandler) {
         this.mappingHandler = mappingHandler;
     }
 

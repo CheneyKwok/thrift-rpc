@@ -1,14 +1,13 @@
 package github.cheneykwok.server.properties;
 
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "spring.thrift.server.threaded-selector")
-public class TThreadedSelectorServerProperties {
+import java.util.concurrent.TimeUnit;
 
-    /**
-     * 每个Selector线程可接收连接的阻塞队列大小
-     */
-    private int acceptQueueSizePerThread = 4;
+@Data
+@ConfigurationProperties(prefix = "rpc.server.threaded-selector")
+public class TThreadedSelectorServerProperties {
 
     /**
      * 接收连接的Selector线程数量
@@ -16,59 +15,34 @@ public class TThreadedSelectorServerProperties {
     private int selectorThreads = 2;
 
     /**
-     * 处理任务的最小工作线程池大小
-     * 如果为0，默认由Selector线程进行处理
+     * 每个Selector线程可接收连接的阻塞队列大小
      */
-    private int minWorkerThreads = 5;
+    private int acceptQueueSizePerThread = 4;
 
     /**
-     * 处理任务的最大工作线程池大小
+     * 核心工作线程数
+     */
+    private int coreWorkerThreads = 5;
+
+    /**
+     * 最大工作线程数
      */
     private int maxWorkerThreads = 20;
 
     /**
-     * 工作线程池中的线程的存活时间
+     * 非核心空闲线程存活时间
      */
-    private int keepAlivedTime = 5;
+    private int keepAliveTime = 60;
+
+    /**
+     * keepAliveTime参数的时间单位
+     */
+    private TimeUnit timeUnit = TimeUnit.SECONDS;
+
+    /**
+     * 工作线程队列容量
+     */
+    private int workerQueueCapacity = 1000;
 
 
-    public int getAcceptQueueSizePerThread() {
-        return acceptQueueSizePerThread;
-    }
-
-    public void setAcceptQueueSizePerThread(int acceptQueueSizePerThread) {
-        this.acceptQueueSizePerThread = acceptQueueSizePerThread;
-    }
-
-    public int getSelectorThreads() {
-        return selectorThreads;
-    }
-
-    public void setSelectorThreads(int selectorThreads) {
-        this.selectorThreads = selectorThreads;
-    }
-
-    public int getMinWorkerThreads() {
-        return minWorkerThreads;
-    }
-
-    public void setMinWorkerThreads(int minWorkerThreads) {
-        this.minWorkerThreads = minWorkerThreads;
-    }
-
-    public int getMaxWorkerThreads() {
-        return maxWorkerThreads;
-    }
-
-    public void setMaxWorkerThreads(int maxWorkerThreads) {
-        this.maxWorkerThreads = maxWorkerThreads;
-    }
-
-    public int getKeepAlivedTime() {
-        return keepAlivedTime;
-    }
-
-    public void setKeepAlivedTime(int keepAlivedTime) {
-        this.keepAlivedTime = keepAlivedTime;
-    }
 }

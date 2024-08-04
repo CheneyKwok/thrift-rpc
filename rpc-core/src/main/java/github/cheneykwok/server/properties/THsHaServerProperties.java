@@ -1,8 +1,10 @@
 package github.cheneykwok.server.properties;
 
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "spring.thrift.server.hs-ha")
+@Data
+@ConfigurationProperties(prefix = "rpc.server.hs-ha")
 public class THsHaServerProperties {
 
     /**
@@ -16,31 +18,8 @@ public class THsHaServerProperties {
     private int maxWorkerThreads = 20;
 
     /**
-     * 线程的存活时间
+     * 服务的工作线程队列容量
      */
-    private int keepAlivedTime = 1;
+    private int workerQueueCapacity = 1000;
 
-    public int getMinWorkerThreads() {
-        return minWorkerThreads;
-    }
-
-    public void setMinWorkerThreads(int minWorkerThreads) {
-        this.minWorkerThreads = minWorkerThreads;
-    }
-
-    public int getMaxWorkerThreads() {
-        return maxWorkerThreads;
-    }
-
-    public void setMaxWorkerThreads(int maxWorkerThreads) {
-        this.maxWorkerThreads = maxWorkerThreads;
-    }
-
-    public int getKeepAlivedTime() {
-        return keepAlivedTime;
-    }
-
-    public void setKeepAlivedTime(int keepAlivedTime) {
-        this.keepAlivedTime = keepAlivedTime;
-    }
 }

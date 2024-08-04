@@ -1,7 +1,7 @@
 package github.cheneykwok.client;
 
+import github.cheneykwok.client.pool.ThriftClientPool;
 import github.cheneykwok.client.properties.ClientProperties;
-import github.cheneykwok.thrift.pool.ThriftClientPool;
 
 /**
  * 客户端上下文

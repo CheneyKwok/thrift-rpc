@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 public @interface RpcMapping {
 
     /**
-     * RPC path mapping &mdash; for example {@code "/profile"}.
+     * RPC path mapping &mdash; for example {@code "/path"}.
      */
     String value() default "";
 

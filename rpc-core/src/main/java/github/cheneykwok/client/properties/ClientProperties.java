@@ -1,8 +1,9 @@
 package github.cheneykwok.client.properties;
 
+import github.cheneykwok.server.properties.TProtocolType;
+import github.cheneykwok.server.properties.TServerModel;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class ClientProperties {
     /**
      * 服务模型
      */
-    private String serviceModel = TServiceModel.SERVICE_MODEL_DEFAULT;
+    private TServerModel serverModel = TServerModel.THREADED_SELECTOR;
 
     /**
      * 重试次数
@@ -45,10 +46,11 @@ public class ClientProperties {
 //     */
 //    private final Map<String, String> packageToServerAddr = new HashMap<>();
 
+    private TProtocolType protocol = TProtocolType.TCompactProtocol;
+
     /**
-     * 连接池配置
+     * 客户端对象池配置
      */
-    @NestedConfigurationProperty
     private ClientPoolProperties pool = new ClientPoolProperties();
 
 }

@@ -5,7 +5,7 @@ import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties("spring.thrift.client.pool")
+@ConfigurationProperties("rpc.client.pool")
 public class ClientPoolProperties {
 
     /**
