@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("rpc.client.pool")
 public class ClientPoolProperties {
 
+
     /**
      * 最大等待时间
      */

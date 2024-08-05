@@ -1,10 +1,14 @@
 rpc:
   client:
+    enabled: true
     server-addr-list:
       user: 127.0.0.1:40880
     retry-times: 6
     connect-timeout: 2000
     server-model: threaded_selector
+    package-to-server-addr:
+      github.cheneykwok.api.user: 127.0.0.1:40880
+
 
 server:
   port: -1

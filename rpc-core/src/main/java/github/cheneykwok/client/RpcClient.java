@@ -1,5 +1,8 @@
 package github.cheneykwok.client;
 
+import github.cheneykwok.client.properties.ClientProperties;
+import org.springframework.core.annotation.AliasFor;
+
 import java.lang.annotation.*;
 
 /**
@@ -10,10 +13,19 @@ import java.lang.annotation.*;
 @Documented
 public @interface RpcClient {
 
+    @AliasFor("serverId")
+    String value() default "";
+
     /**
-     * 服务端ID
+     * 目标服务的ID
+     *
+     * <P>需配置{@link ClientProperties#serverAddrList}</P>
      */
     String serverId() default "";
 
-    String prefix() default "";
+    /**
+     * 目标服务的地址（优先级高于 serverId）
+     */
+    String address() default "";
+
 }

@@ -30,10 +30,31 @@ public class RpcMappingHandler implements InitializingBean, ApplicationContextAw
 
     private ApplicationContext applicationContext;
 
-    private final Map<String, MappingMethod> methodMappings = new HashMap<>();
+    private final Map<String, MappingMethod> pathToMapping = new HashMap<>();
+
+    private final Map<Method, MappingMethod> methodToMapping = new HashMap<>();
 
     public boolean isHandler(Class<?> beanType) {
         return AnnotatedElementUtils.hasAnnotation(beanType, RpcMapping.class);
+    }
+
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    @Override
+    public int getOrder() {
+        return Integer.MAX_VALUE;
+    }
+
+    public MappingMethod getMethodMapping(String path) {
+        return pathToMapping.get(path);
+    }
+
+    public MappingMethod getMethodMapping(Method method) {
+        return methodToMapping.get(method);
     }
 
     @Override
@@ -54,10 +75,9 @@ public class RpcMappingHandler implements InitializingBean, ApplicationContextAw
         Class<?> beanType = null;
         try {
             beanType = applicationContext.getType(beanName);
-        }
-        catch (Exception ex) {
-            // An unresolvable bean type, probably from a lazy bean - let's ignore it.
-                log.warn("Could not resolve type for bean '" + beanName + "'", ex);
+        } catch (Exception ex) {
+            // 有的 bean 可能尚未完全初始化
+            log.warn("Could not resolve type for bean '" + beanName + "'", ex);
         }
         if (beanType != null && isHandler(beanType)) {
             detectHandlerMethods(beanName, beanType);
@@ -73,7 +93,8 @@ public class RpcMappingHandler implements InitializingBean, ApplicationContextAw
                     (MethodIntrospector.MetadataLookup<MappingMethod>) method -> getMappingForMethod(method, beanName, userType));
 
             for (MappingMethod mappingMethod : methods.values()) {
-                methodMappings.put(mappingMethod.getPath(), mappingMethod);
+                pathToMapping.put(mappingMethod.getPath(), mappingMethod);
+                methodToMapping.put(mappingMethod.getMethod(), mappingMethod);
             }
         }
     }
@@ -95,19 +116,5 @@ public class RpcMappingHandler implements InitializingBean, ApplicationContextAw
 
     private String[] getCandidateBeanNames() {
         return applicationContext.getBeanNamesForType(Object.class);
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
-
-    public MappingMethod getMethodMapping(String path) {
-        return methodMappings.get(path);
-    }
-
-    @Override
-    public int getOrder() {
-        return Integer.MAX_VALUE;
     }
 }

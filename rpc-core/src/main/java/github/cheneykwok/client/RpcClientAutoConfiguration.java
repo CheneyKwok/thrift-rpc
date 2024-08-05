@@ -1,6 +1,5 @@
 package github.cheneykwok.client;
 
-import github.cheneykwok.RpcClientsRegistrar;
 import github.cheneykwok.client.pool.ThriftClientKeyedPooledObjectFactory;
 import github.cheneykwok.client.pool.ThriftClientPool;
 import github.cheneykwok.client.properties.ClientPoolProperties;
@@ -12,14 +11,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 
 import java.time.Duration;
 
 
 @AutoConfiguration
 @ConditionalOnProperty(prefix = "rpc.client", name = {"enabled"}, havingValue = "true")
-@Import(RpcClientsRegistrar.class)
 @EnableConfigurationProperties({ClientProperties.class, ClientPoolProperties.class})
 public class RpcClientAutoConfiguration {
 

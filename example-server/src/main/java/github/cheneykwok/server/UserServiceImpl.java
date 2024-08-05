@@ -1,7 +1,7 @@
 package github.cheneykwok.server;
 
-import github.cheneykwok.api.User;
-import github.cheneykwok.api.UserRpcService;
+import github.cheneykwok.api.user.User;
+import github.cheneykwok.api.user.UserRpcService;
 import org.springframework.stereotype.Service;
 
 @Service

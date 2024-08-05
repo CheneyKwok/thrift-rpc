@@ -9,7 +9,7 @@ import github.cheneykwok.thrift.gen.inner.InnerRequest;
 import github.cheneykwok.thrift.gen.inner.InnerResponse;
 import github.cheneykwok.thrift.gen.inner.InnerRpcService;
 import org.apache.thrift.TServiceClient;
-import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -20,20 +20,29 @@ import java.util.Map;
 
 public class RpcInvocationHandler implements InvocationHandler {
 
-    private final String serverId;
-
     private final Class<?> target;
 
     private final Class<?> ifaceClass;
+
+    private final String serverId;
+
+    private final String address;
+
+    private final BeanFactory beanFactory;
 
     private ClientProperties clientProperties;
 
     private ThriftClientPool clientPool;
 
-    public RpcInvocationHandler(String serverId, Class<?> ifaceClass, Class<?> target) {
-        this.serverId = serverId;
-        this.ifaceClass = ifaceClass;
+    private RpcMappingHandler mappingHandler;
+
+    public RpcInvocationHandler(Class<?> target, Class<?> ifaceClass, String serverId, String address, BeanFactory beanFactory) {
         this.target = target;
+        this.ifaceClass = ifaceClass;
+        this.serverId = serverId;
+        this.address = address;
+        this.beanFactory = beanFactory;
+
     }
 
     @Override
@@ -58,17 +67,23 @@ public class RpcInvocationHandler implements InvocationHandler {
         if (clientPool == null) {
             clientPool = ClientContext.context().getClientPool();
         }
-
-        Map<String, String> serverAddrList = clientProperties.getServerAddrList();
-        String serverAddr = serverAddrList.get(serverId);
-        if (serverAddr == null) {
-            throw new RuntimeException("No server address found for serverId: " + serverId);
+        if (mappingHandler == null) {
+            mappingHandler = beanFactory.getBean(RpcMappingHandler.class);
         }
-        String[] address = serverAddr.split(":");
+
+        String address = this.address;
+        if (!StringUtils.hasText(address)) {
+            Map<String, String> serverAddrList = clientProperties.getServerAddrList();
+            address = serverAddrList.get(serverId);
+        }
+        if (!StringUtils.hasText(address)) {
+            throw new RuntimeException("Invalid server address");
+        }
+        String[] arr = address.split(":");
         ServiceKey serviceKey = ServiceKey
                 .builder()
-                .host(address[0])
-                .port(Integer.parseInt(address[1]))
+                .host(arr[0])
+                .port(Integer.parseInt(arr[1]))
                 .connectTimeout(clientProperties.getConnectTimeout())
                 .serviceInterfaceClass(ifaceClass)
                 .build();
@@ -77,7 +92,8 @@ public class RpcInvocationHandler implements InvocationHandler {
         try {
             client = clientPool.borrowObject(serviceKey);
             if (client instanceof InnerRpcService.Client innerRpcClient) {
-                String path = getPath(proxy, method);
+                MappingMethod mapping = mappingHandler.getMethodMapping(method);
+                String path = mapping.getPath();
 
                 InnerRequest request = new InnerRequest();
                 request.setPath(path);
@@ -96,19 +112,6 @@ public class RpcInvocationHandler implements InvocationHandler {
             clientPool.returnObject(serviceKey, client);
         }
         return result;
-    }
-
-    private String getPath(Object proxy, Method method) {
-        RpcMapping methodMapping = method.getAnnotation(RpcMapping.class);
-        if (methodMapping == null || !StringUtils.hasText(methodMapping.value())) {
-            throw new IllegalStateException("@RpcMapping value must not be empty, method: " + method.toGenericString());
-        }
-        String path = methodMapping.value();
-        RpcMapping classMapping = AnnotationUtils.findAnnotation(proxy.getClass(), RpcMapping.class);
-        if (classMapping != null && StringUtils.hasText(classMapping.value())) {
-            path = classMapping.value() + path;
-        }
-        return path;
     }
 
     @Override

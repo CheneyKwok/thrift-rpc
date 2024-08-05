@@ -1,4 +1,4 @@
-package github.cheneykwok.api;
+package github.cheneykwok.api.user;
 
 import lombok.Data;
 

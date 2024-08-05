@@ -1,14 +1,14 @@
 package github.cheneykwok;
 
-import github.cheneykwok.api.User;
-import github.cheneykwok.api.UserRpcService;
+import github.cheneykwok.api.user.User;
+import github.cheneykwok.api.user.UserRpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-//@EnableRpcClient
+@RpcClientScan
 @SpringBootApplication
 public class ExampleClient {
 

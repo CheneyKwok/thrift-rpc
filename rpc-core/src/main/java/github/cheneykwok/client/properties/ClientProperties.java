@@ -18,6 +18,8 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "rpc.client")
 public class ClientProperties {
 
+    private boolean enabled = false;
+
     /**
      * 服务模型
      */
@@ -38,13 +40,13 @@ public class ClientProperties {
      */
     private final Map<String, String> serverAddrList = new HashMap<>();
 
-//    /**
-//     * 包对应的服务器地址
-//     * <P>
-//     * 格式: com.xxx.user: 127.0.0.1:8888
-//     * </P>
-//     */
-//    private final Map<String, String> packageToServerAddr = new HashMap<>();
+    /**
+     * 包对应的服务器地址
+     * <P>
+     * 格式: com.xxx.user: 127.0.0.1:8888
+     * </P>
+     */
+    private final Map<String, String> packageToServerAddr = new HashMap<>();
 
     private TProtocolType protocol = TProtocolType.TCompactProtocol;
 
