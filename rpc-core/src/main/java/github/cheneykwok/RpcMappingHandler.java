@@ -35,7 +35,16 @@ public class RpcMappingHandler implements InitializingBean, ApplicationContextAw
     private final Map<Method, MappingMethod> methodToMapping = new HashMap<>();
 
     public boolean isHandler(Class<?> beanType) {
-        return AnnotatedElementUtils.hasAnnotation(beanType, RpcMapping.class);
+        boolean isHandler = AnnotatedElementUtils.hasAnnotation(beanType, RpcMapping.class);
+        if (isHandler) {
+            return true;
+        }
+        for (Method method : beanType.getMethods()) {
+            if (AnnotatedElementUtils.hasAnnotation(method, RpcMapping.class)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
