@@ -1,5 +1,6 @@
 package github.cheneykwok.server;
 
+import github.cheneykwok.MappingRegistry;
 import github.cheneykwok.RpcMappingHandler;
 import github.cheneykwok.server.properties.ServerProperties;
 import github.cheneykwok.server.properties.THsHaServerProperties;
@@ -22,8 +23,18 @@ import org.springframework.context.annotation.Bean;
 public class RpcServerAutoConfiguration {
 
     @Bean
-    public InnerRpcService.Iface innerRpcService(RpcMappingHandler rpcMappingHandler) {
-        return new InnerRpcServiceImpl(rpcMappingHandler);
+    public MappingRegistry mappingRegistry() {
+        return new MappingRegistry();
+    }
+
+    @Bean
+    public RpcMappingHandler rpcMappingHandler(MappingRegistry mappingRegistry ) {
+        return new RpcMappingHandler(mappingRegistry);
+    }
+
+    @Bean
+    public InnerRpcService.Iface innerRpcService(MappingRegistry mappingRegistry) {
+        return new InnerRpcServiceImpl(mappingRegistry);
     }
 
     @Bean

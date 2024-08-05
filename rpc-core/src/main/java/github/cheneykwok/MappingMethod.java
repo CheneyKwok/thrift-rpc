@@ -18,7 +18,7 @@ public class MappingMethod {
 
     private BeanFactory beanFactory;
 
-    private  Class<?> beanType;
+    private Class<?> beanType;
 
     private Method method;
 

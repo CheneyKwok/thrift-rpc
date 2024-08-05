@@ -1,15 +1,16 @@
-package github.cheneykwok;
+package github.cheneykwok.client;
 
 import com.alibaba.fastjson2.JSON;
-import github.cheneykwok.client.ClientContext;
-import github.cheneykwok.client.ServiceKey;
+import github.cheneykwok.MappingMethod;
+import github.cheneykwok.MappingRegistry;
 import github.cheneykwok.client.pool.ThriftClientPool;
 import github.cheneykwok.client.properties.ClientProperties;
 import github.cheneykwok.thrift.gen.inner.InnerRequest;
 import github.cheneykwok.thrift.gen.inner.InnerResponse;
 import github.cheneykwok.thrift.gen.inner.InnerRpcService;
 import org.apache.thrift.TServiceClient;
-import org.springframework.beans.factory.BeanFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -20,6 +21,8 @@ import java.util.Map;
 
 public class RpcInvocationHandler implements InvocationHandler {
 
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
     private final Class<?> target;
 
     private final Class<?> ifaceClass;
@@ -28,21 +31,22 @@ public class RpcInvocationHandler implements InvocationHandler {
 
     private final String address;
 
-    private final BeanFactory beanFactory;
+    private final MappingRegistry mappingRegistry;
 
-    private ClientProperties clientProperties;
+    private final ClientProperties clientProperties;
 
-    private ThriftClientPool clientPool;
+    private final ThriftClientPool clientPool;
 
-    private RpcMappingHandler mappingHandler;
 
-    public RpcInvocationHandler(Class<?> target, Class<?> ifaceClass, String serverId, String address, BeanFactory beanFactory) {
+    public RpcInvocationHandler(Class<?> target, Class<?> ifaceClass, String serverId, String address,
+                                MappingRegistry mappingRegistry, ClientProperties clientProperties, ThriftClientPool clientPool) {
         this.target = target;
         this.ifaceClass = ifaceClass;
         this.serverId = serverId;
         this.address = address;
-        this.beanFactory = beanFactory;
-
+        this.mappingRegistry = mappingRegistry;
+        this.clientProperties = clientProperties;
+        this.clientPool = clientPool;
     }
 
     @Override
@@ -60,15 +64,6 @@ public class RpcInvocationHandler implements InvocationHandler {
                 return hashCode();
             case "toString":
                 return toString();
-        }
-        if (clientProperties == null) {
-            clientProperties = ClientContext.context().getClientProperties();
-        }
-        if (clientPool == null) {
-            clientPool = ClientContext.context().getClientPool();
-        }
-        if (mappingHandler == null) {
-            mappingHandler = beanFactory.getBean(RpcMappingHandler.class);
         }
 
         String address = this.address;
@@ -92,13 +87,17 @@ public class RpcInvocationHandler implements InvocationHandler {
         try {
             client = clientPool.borrowObject(serviceKey);
             if (client instanceof InnerRpcService.Client innerRpcClient) {
-                MappingMethod mapping = mappingHandler.getMethodMapping(method);
+                MappingMethod mapping = mappingRegistry.getMapping(method);
                 String path = mapping.getPath();
 
                 InnerRequest request = new InnerRequest();
                 request.setPath(path);
                 request.setArg(JSON.toJSONString(args));
                 InnerResponse response = innerRpcClient.request(request);
+                if (!response.isSuccess) {
+                    log.error("request failed, path: {}, response: {}", path, response);
+                    return null;
+                }
                 Class<?> returnType = method.getReturnType();
                 result = JSON.parseObject(response.getData(), returnType);
             } else {

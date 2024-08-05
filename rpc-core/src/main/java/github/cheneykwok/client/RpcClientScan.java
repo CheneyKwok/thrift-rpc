@@ -1,6 +1,5 @@
-package github.cheneykwok;
+package github.cheneykwok.client;
 
-import github.cheneykwok.client.RpcClientScannerRegistrar;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
 

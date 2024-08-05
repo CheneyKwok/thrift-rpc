@@ -1,5 +1,7 @@
 package github.cheneykwok.client;
 
+import github.cheneykwok.MappingRegistry;
+import github.cheneykwok.RpcMappingHandler;
 import github.cheneykwok.client.pool.ThriftClientKeyedPooledObjectFactory;
 import github.cheneykwok.client.pool.ThriftClientPool;
 import github.cheneykwok.client.properties.ClientPoolProperties;
@@ -52,8 +54,14 @@ public class RpcClientAutoConfiguration {
     }
 
     @Bean
-    public ClientContext clientContext(ClientProperties clientProperties, ThriftClientPool clientPool) {
-        return ClientContext.context(clientProperties, clientPool);
+    public MappingRegistry mappingRegistry() {
+        return new MappingRegistry();
     }
+
+    @Bean
+    public RpcMappingHandler rpcMappingHandler(MappingRegistry mappingRegistry) {
+        return new RpcMappingHandler(mappingRegistry);
+    }
+
 
 }

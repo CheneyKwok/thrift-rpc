@@ -1,6 +1,6 @@
 package github.cheneykwok;
 
-import github.cheneykwok.thrift.pool.ConnectionKey;
+import github.cheneykwok.client.ServiceKey;
 import lombok.Data;
 
 import java.util.HashMap;
@@ -15,7 +15,7 @@ public class RpcRequestTemplate {
 
     private Map<String, String> header = new HashMap<>();
 
-    private ConnectionKey connectionKey;
+    private ServiceKey serviceKey;
 
     private MethodMetadata methodMetadata;
 

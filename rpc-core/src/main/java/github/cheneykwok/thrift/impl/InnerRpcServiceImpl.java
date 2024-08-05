@@ -2,7 +2,7 @@ package github.cheneykwok.thrift.impl;
 
 import com.alibaba.fastjson2.JSON;
 import github.cheneykwok.MappingMethod;
-import github.cheneykwok.RpcMappingHandler;
+import github.cheneykwok.MappingRegistry;
 import github.cheneykwok.thrift.gen.inner.InnerRequest;
 import github.cheneykwok.thrift.gen.inner.InnerResponse;
 import github.cheneykwok.thrift.gen.inner.InnerRpcService;
@@ -13,10 +13,10 @@ import java.util.List;
 
 public class InnerRpcServiceImpl implements InnerRpcService.Iface {
 
-    private final RpcMappingHandler mappingHandler;
+    private final MappingRegistry mappingRegistry;
 
-    public InnerRpcServiceImpl(RpcMappingHandler mappingHandler) {
-        this.mappingHandler = mappingHandler;
+    public InnerRpcServiceImpl(MappingRegistry mappingRegistry) {
+        this.mappingRegistry = mappingRegistry;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class InnerRpcServiceImpl implements InnerRpcService.Iface {
         Object[] args = null;
         Object result;
         try {
-            MappingMethod mappingMethod = mappingHandler.getMethodMapping(path);
+            MappingMethod mappingMethod = mappingRegistry.getMapping(path);
             if (mappingMethod == null) {
                 return new InnerResponse(404, "not found", false);
             }

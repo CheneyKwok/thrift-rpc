@@ -9,7 +9,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.MethodIntrospector;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotatedElementUtils;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
@@ -21,7 +20,6 @@ import java.util.Map;
  * @author gzc
  * @date 2024-07-31
  */
-@Component
 public class RpcMappingHandler implements InitializingBean, ApplicationContextAware, Ordered {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -33,6 +31,12 @@ public class RpcMappingHandler implements InitializingBean, ApplicationContextAw
     private final Map<String, MappingMethod> pathToMapping = new HashMap<>();
 
     private final Map<Method, MappingMethod> methodToMapping = new HashMap<>();
+
+    private final MappingRegistry mappingRegistry;
+
+    public RpcMappingHandler(MappingRegistry mappingRegistry) {
+        this.mappingRegistry = mappingRegistry;
+    }
 
     public boolean isHandler(Class<?> beanType) {
         boolean isHandler = AnnotatedElementUtils.hasAnnotation(beanType, RpcMapping.class);
@@ -58,10 +62,6 @@ public class RpcMappingHandler implements InitializingBean, ApplicationContextAw
         return Integer.MAX_VALUE;
     }
 
-    public MappingMethod getMethodMapping(String path) {
-        return pathToMapping.get(path);
-    }
-
     public MappingMethod getMethodMapping(Method method) {
         return methodToMapping.get(method);
     }
@@ -85,7 +85,6 @@ public class RpcMappingHandler implements InitializingBean, ApplicationContextAw
         try {
             beanType = applicationContext.getType(beanName);
         } catch (Exception ex) {
-            // 有的 bean 可能尚未完全初始化
             log.warn("Could not resolve type for bean '" + beanName + "'", ex);
         }
         if (beanType != null && isHandler(beanType)) {
@@ -102,8 +101,7 @@ public class RpcMappingHandler implements InitializingBean, ApplicationContextAw
                     (MethodIntrospector.MetadataLookup<MappingMethod>) method -> getMappingForMethod(method, beanName, userType));
 
             for (MappingMethod mappingMethod : methods.values()) {
-                pathToMapping.put(mappingMethod.getPath(), mappingMethod);
-                methodToMapping.put(mappingMethod.getMethod(), mappingMethod);
+                mappingRegistry.register(mappingMethod);
             }
         }
     }

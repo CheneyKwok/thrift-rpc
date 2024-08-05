@@ -1,10 +1,11 @@
 package github.cheneykwok.client;
 
-import github.cheneykwok.RpcInvocationHandler;
+import github.cheneykwok.MappingRegistry;
+import github.cheneykwok.client.pool.ThriftClientPool;
+import github.cheneykwok.client.properties.ClientProperties;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -23,8 +24,6 @@ public class ClientFactoryBean implements FactoryBean<Object>, InitializingBean 
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    private BeanFactory beanFactory;
-
     private Class<?> type;
 
     private Class<?> ifaceClass;
@@ -33,6 +32,12 @@ public class ClientFactoryBean implements FactoryBean<Object>, InitializingBean 
 
     private String address;
 
+    private MappingRegistry mappingRegistry;
+
+    private ClientProperties clientProperties;
+
+    private ThriftClientPool clientPool;
+
     @Override
     public Object getObject() {
         return getTarget();
@@ -40,7 +45,8 @@ public class ClientFactoryBean implements FactoryBean<Object>, InitializingBean 
 
     @SuppressWarnings("unchecked")
     <T> T getTarget() {
-        RpcInvocationHandler invocationHandler = new RpcInvocationHandler(type, ifaceClass, serverId, address, beanFactory);
+        RpcInvocationHandler invocationHandler = new RpcInvocationHandler(type, ifaceClass, serverId, address,
+                mappingRegistry, clientProperties, clientPool);
         return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, invocationHandler);
     }
 
@@ -52,7 +58,6 @@ public class ClientFactoryBean implements FactoryBean<Object>, InitializingBean 
 
     @Override
     public void afterPropertiesSet() {
-        notNull(this.beanFactory, "Property 'beanFactory' is required");
         notNull(this.type, "Property 'type' is required");
         notNull(this.ifaceClass, "Property 'ifaceClass' is required");
     }

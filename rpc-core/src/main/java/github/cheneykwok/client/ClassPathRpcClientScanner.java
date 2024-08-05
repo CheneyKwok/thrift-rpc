@@ -5,9 +5,9 @@ import github.cheneykwok.thrift.gen.inner.InnerRpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.MutablePropertyValues;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
@@ -75,12 +75,9 @@ public class ClassPathRpcClientScanner extends ClassPathBeanDefinitionScanner {
                 if (hasAnnotation) {
 
                     Assert.isTrue(annotationMetadata.isInterface(), "@RpcClient can only be specified on an interface");
-                    BeanDefinitionRegistry registry = getRegistry();
                     String className = annotationMetadata.getClassName();
                     Class<?> clazz = ClassUtils.resolveClassName(className, null);
-                    ConfigurableBeanFactory beanFactory = registry instanceof ConfigurableBeanFactory ? (ConfigurableBeanFactory) registry : null;
                     MutablePropertyValues propertyValues = beanDefinition.getPropertyValues();
-                    propertyValues.add("beanFactory", beanFactory);
                     propertyValues.add("type", clazz);
                     propertyValues.add("ifaceClass", getIfaceClass(className));
 
@@ -91,8 +88,8 @@ public class ClassPathRpcClientScanner extends ClassPathBeanDefinitionScanner {
                         String serverId = attributes.getString("serverId");
                         String address = attributes.getString("address");
                         if (!StringUtils.hasText(serverId) && !StringUtils.hasText(address)) {
-                            throw new IllegalStateException("'serverId' or 'address' must be provided in @" + RpcClient.class.getSimpleName() + " on class: " + className);
-
+                            throw new IllegalStateException("'serverId' or 'address' must be " +
+                                    "provided in @" + RpcClient.class.getSimpleName() + " on class: " + className);
                         }
 
                         propertyValues.add("serverId", serverId);
@@ -102,6 +99,7 @@ public class ClassPathRpcClientScanner extends ClassPathBeanDefinitionScanner {
                     beanDefinition.setLazyInit(true);
                     beanDefinition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
                     beanDefinition.setBeanClass(ClientFactoryBean.class);
+                    beanDefinition.setAttribute(FactoryBean.OBJECT_TYPE_ATTRIBUTE, clazz);
 
                 }
             }

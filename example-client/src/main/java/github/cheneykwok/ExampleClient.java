@@ -2,6 +2,7 @@ package github.cheneykwok;
 
 import github.cheneykwok.api.user.User;
 import github.cheneykwok.api.user.UserRpcService;
+import github.cheneykwok.client.RpcClientScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;

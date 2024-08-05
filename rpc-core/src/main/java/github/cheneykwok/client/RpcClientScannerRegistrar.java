@@ -1,6 +1,5 @@
 package github.cheneykwok.client;
 
-import github.cheneykwok.RpcClientScan;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.EnvironmentAware;
